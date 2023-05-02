@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
-import { useTheme } from "next-themes";
 import { Mail, Calendar, Settings, PersonStanding } from "lucide-react";
-import { useRouter } from "next/router";
 
 import { Button } from "./button";
 import AuthShowcase from "./auth-show-case";
 
 const MainSidebar = () => {
   return (
-    <div className="flex flex-col justify-between p-4 shadow-lg shadow-gray-500">
+    <div
+      className={`flex flex-col justify-between  border-r p-4 shadow-sm shadow-primary-foreground `}
+    >
       <div className="mt-4">
         <div className="mb-12">
           <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight lg:text-3xl">
-            schedule.com{" "}
+            Schedule.com{" "}
           </h1>
         </div>
 
-        <div className="flex flex-col ">
+        <div className="flex flex-col border-t pt-3 ">
           <Link href="/events">
             <Button className="w-full justify-start bg-inherit font-semibold capitalize text-foreground hover:text-secondary">
               <Mail className="mr-2 h-4 w-4 font-semibold" /> Events{" "}

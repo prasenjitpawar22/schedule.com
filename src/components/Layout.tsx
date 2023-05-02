@@ -10,7 +10,9 @@ const Layout = ({ children }: GlobalLayout) => {
   return (
     <div className="flex min-h-screen">
       <MainSidebar />
-      {children}
+      <div className="min-h-screen w-full overflow-y-clip bg-primary-foreground">
+        {children}
+      </div>
     </div>
   );
 };

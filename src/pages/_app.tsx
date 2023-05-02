@@ -6,6 +6,7 @@ import { ThemeProvider } from "next-themes";
 import { api } from "@/utils/api";
 import "@/styles/globals.css";
 import Layout from "@/components/Layout";
+import "react-datepicker/dist/react-datepicker.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
