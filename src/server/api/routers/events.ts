@@ -34,7 +34,7 @@ export const eventsRouter = createTRPCRouter({
   deletEvent: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      ctx.prisma.events
+      await ctx.prisma.events
         .delete({
           where: { id: input.id },
         })
