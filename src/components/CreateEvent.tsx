@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   AlertDialog,
@@ -16,19 +16,66 @@ import { Textarea } from "@/src/components/ui/textarea";
 
 import type { IEventFormData } from "../types";
 import ReactDatePicker from "react-datepicker";
+import { api } from "../utils/api";
+import { Events } from "@prisma/client";
+import { IEventDto } from "../@types";
+import { Loader2 } from "lucide-react";
 
 interface Props {
-  setEventFormData: React.Dispatch<React.SetStateAction<IEventFormData>>;
-  eventFormData: IEventFormData;
+  AllEventsState: Events[] | undefined;
+  setAllEventsState: React.Dispatch<React.SetStateAction<Events[] | undefined>>;
+  open: boolean | undefined;
+  setOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
 }
 
 export const CreateEvent = (props: Props) => {
-  const { eventFormData, setEventFormData } = props;
+  const { setAllEventsState, AllEventsState, open, setOpen } = props;
+  const { refetch } = api.events.getAllEvents.useQuery();
+
+  const [eventFormData, setEventFormData] = useState<IEventDto>({
+    description: "",
+    endDate: new Date(),
+    location: "",
+    startDate: new Date(),
+    title: "",
+  });
+
+  const { mutateAsync, isLoading } = api.events.createEvent.useMutation();
+
+  const handleEventCreate = async () => {
+    const { description, endDate, location, startDate, title } = eventFormData;
+    mutateAsync({
+      description: description,
+      title: title,
+      startDate: startDate,
+      endDate: endDate,
+      location: location,
+    })
+      .then((res) => {
+        // less optmiszed fetching all events again
+        refetch().then((res) => {
+          setAllEventsState(res.data);
+          setOpen(false);
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+        setOpen(false);
+      });
+
+    setEventFormData({
+      description: "",
+      endDate: new Date(),
+      location: "",
+      startDate: new Date(),
+      title: "",
+    });
+  };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open}>
       <AlertDialogTrigger asChild>
-        <Button>Create</Button>
+        <Button onClick={() => setOpen(true)}>Create</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="flex h-4/5 flex-col justify-between sm:max-w-[425px]">
         <div className="flex flex-col gap-4">
@@ -120,10 +167,21 @@ export const CreateEvent = (props: Props) => {
           </div>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setEventFormData({})}>
+          <AlertDialogCancel
+            onClick={() => {
+              console.log("as");
+              setOpen!(false);
+            }}
+          >
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction>Create</AlertDialogAction>
+          <Button
+            onClick={() => handleEventCreate()}
+            className={`flex items-center justify-center`}
+          >
+            Create
+            {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

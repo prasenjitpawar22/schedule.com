@@ -8,15 +8,20 @@ import { any } from "zod";
 import AllEventsCard from "@/src/components/AllEventsCard";
 import { Button } from "@/src/components/ui/button";
 import { CreateEvent } from "@/src/components/CreateEvent";
+import { Events } from "@prisma/client";
 
 const Event: NextPage = ({}) => {
-  const [eventsData, setEventsData] = useState();
-  const [eventFormData, setEventFormData] = useState<IEventFormData>({});
+  const { data: AllEvents, isLoading } = api.events.getAllEvents.useQuery();
+  const [open, setOpen] = useState<boolean | undefined>(false);
 
-  const events = api.events.getAllEvents.useQuery();
+  const [AllEventsState, setAllEventsState] = useState(AllEvents);
 
-  if (!events.data) return <div>loading</div>;
+  useEffect(() => {
+    setAllEventsState(AllEvents);
+  }, [isLoading]);
 
+  //TODO: add shimmer effect
+  if (isLoading) return <div>loading</div>;
   return (
     <div className="m-12">
       <div className="mb-12 flex items-baseline justify-between">
@@ -24,33 +29,19 @@ const Event: NextPage = ({}) => {
           Events
         </h1>
         <CreateEvent
-          eventFormData={eventFormData}
-          setEventFormData={setEventFormData}
+          open={open}
+          setOpen={setOpen}
+          AllEventsState={AllEventsState}
+          setAllEventsState={setAllEventsState}
         />
       </div>
 
-      {events.data && events.data.length && (
-        <AllEventsCard events={events.data} />
-      )}
-
-      {!events.data && (
-        <EmptyEventsCard
-          eventFormData={eventFormData}
-          setEventFormData={setEventFormData}
-        />
-      )}
+      <AllEventsCard
+        AllEventsState={AllEventsState}
+        setAllEventsState={setAllEventsState}
+      />
     </div>
   );
 };
 
 export default Event;
-
-// export const getServerSideProps = async () => {
-//   const events = api.events.getAllEvents.useQuery();
-
-//   return {
-//     props: {
-//       events: events,
-//     },
-//   };
-// };

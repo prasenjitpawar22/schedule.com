@@ -41,13 +41,11 @@ interface Props {
   eventFormData: IEventFormData;
 }
 
-const EmptyEventsCard = (props: Props) => {
-  const { eventFormData, setEventFormData } = props;
-
-  function handleEventCreate() {
-    // setEventFormData({});
-    console.log(eventFormData);
-  }
+const EmptyEventsCard = () => {
+  // function handleEventCreate() {
+  //   // setEventFormData({});
+  //   console.log(eventFormData);
+  // }
 
   return (
     <div className="flex flex-col gap-4">
@@ -64,12 +62,7 @@ const EmptyEventsCard = (props: Props) => {
               </CardTitle>
               <CardDescription>{`Create a event`}</CardDescription>
             </CardHeader>
-            <CardContent className="">
-              <CreateEvent
-                eventFormData={eventFormData}
-                setEventFormData={setEventFormData}
-              />
-            </CardContent>
+            <CardContent className="">{/* <CreateEvent /> */}</CardContent>
           </div>
 
           <CardFooter>

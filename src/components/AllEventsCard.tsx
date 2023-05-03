@@ -9,71 +9,67 @@ import {
 import { type Events } from "@prisma/client";
 import UpdateEvent from "./UpdateEvent";
 import { Button } from "./ui/button";
+import { api } from "../utils/api";
+import EmptyEventsCard from "./EmptyEventsCard";
 
 interface Props {
-  events: Events[];
+  AllEventsState: Events[] | undefined;
+  setAllEventsState: React.Dispatch<React.SetStateAction<Events[] | undefined>>;
 }
 
 const AllEventsCard = (props: Props) => {
-  const { events } = props;
+  const { AllEventsState, setAllEventsState } = props;
 
-  console.log(events);
+  const { mutateAsync } = api.events.deletEvent.useMutation();
+
+  async function handleEventDelete(id: string) {
+    mutateAsync({ id })
+      //optimzed just no backend call
+      .then(() => {
+        setAllEventsState(AllEventsState?.filter((item) => item.id !== id));
+      })
+      .catch((e) => console.log(e));
+  }
+
+  if (!AllEventsState?.length) return <EmptyEventsCard />;
 
   return (
     <>
       <Card>
-        {/* <CardHeader>
-          <CardTitle>All Events</CardTitle>
-        </CardHeader> */}
         <CardContent className="bg-ternary text-primary">
           <Accordion type="single" collapsible className="w-full">
-            {events.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="capitalize">
-                  {item.title}
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex flex-col gap-2">
-                    <span>
-                      Yes. It adheres to the WAI-ARIA design pattern.{" "}
-                      {item.description}
-                    </span>
-                    <span className="capitalize">
-                      {item.location}:{" "}
-                      {item.startDate.toString().split("GMT")[0]}
-                      {" - "}
-                      {item.endDate.toString().split("GMT")[0]}
-                    </span>
-                    <div className="flex gap-2">
-                      <UpdateEvent event={item} />
-                      <Button variant="outline" className="w-fit">
-                        Delete
-                      </Button>
+            {AllEventsState &&
+              AllEventsState.map((item, index) => (
+                <AccordionItem key={index} value={`item-${index}`}>
+                  <AccordionTrigger className="capitalize">
+                    {item.title}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="flex flex-col gap-2">
+                      <span>
+                        Yes. It adheres to the WAI-ARIA design pattern.{" "}
+                        {item.description}
+                      </span>
+                      <span className="capitalize">
+                        {item.location}:{" "}
+                        {item.startDate.toString().split("GMT")[0]}
+                        {" - "}
+                        {item.endDate.toString().split("GMT")[0]}
+                      </span>
+                      <div className="flex gap-2">
+                        <UpdateEvent event={item} />
+                        <Button
+                          variant="outline"
+                          className="w-fit"
+                          onClick={() => handleEventDelete(item.id)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-            <AccordionItem value="item-1">
-              <AccordionTrigger>Is it accessible?</AccordionTrigger>
-              <AccordionContent>
-                Yes. It adheres to the WAI-ARIA design pattern.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger>Is it styled?</AccordionTrigger>
-              <AccordionContent>
-                {`Yes. It comes with default styles that matches the other
-                components' aesthetic.`}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
-              <AccordionTrigger>Is it animated?</AccordionTrigger>
-              <AccordionContent>
-                {`  Yes. It's animated by default, but you can disable it if you
-                prefer.`}
-              </AccordionContent>
-            </AccordionItem>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
           </Accordion>
         </CardContent>
       </Card>
