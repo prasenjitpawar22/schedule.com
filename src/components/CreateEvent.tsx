@@ -42,7 +42,7 @@ export const CreateEvent = (props: Props) => {
 
   const { mutateAsync, isLoading } = api.events.createEvent.useMutation();
 
-  const handleEventCreate = async () => {
+  const handleEventCreate = () => {
     const { description, endDate, location, startDate, title } = eventFormData;
     mutateAsync({
       description: description,
@@ -51,12 +51,14 @@ export const CreateEvent = (props: Props) => {
       endDate: endDate,
       location: location,
     })
-      .then((res) => {
+      .then(() => {
         // less optmiszed fetching all events again
-        refetch().then((res) => {
-          setAllEventsState(res.data);
-          setOpen(false);
-        });
+        refetch()
+          .then((res) => {
+            setAllEventsState(res.data);
+            setOpen(false);
+          })
+          .catch((e) => console.log(e));
       })
       .catch((e) => {
         console.log(e);
@@ -167,12 +169,7 @@ export const CreateEvent = (props: Props) => {
           </div>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel
-            onClick={() => {
-              console.log("as");
-              setOpen!(false);
-            }}
-          >
+          <AlertDialogCancel onClick={() => setOpen(false)}>
             Cancel
           </AlertDialogCancel>
           <Button

@@ -22,7 +22,7 @@ const AllEventsCard = (props: Props) => {
 
   const { mutateAsync } = api.events.deletEvent.useMutation();
 
-  async function handleEventDelete(id: string) {
+  function handleEventDelete(id: string) {
     mutateAsync({ id })
       //optimzed just no backend call
       .then(() => {

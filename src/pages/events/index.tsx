@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import EmptyEventsCard from "@/src/components/EmptyEventsCard";
-import { IEventFormData } from "@/src/types";
 import { api } from "@/src/utils/api";
 import { NextPage } from "next";
-import { any } from "zod";
 import AllEventsCard from "@/src/components/AllEventsCard";
-import { Button } from "@/src/components/ui/button";
 import { CreateEvent } from "@/src/components/CreateEvent";
-import { Events } from "@prisma/client";
 
 const Event: NextPage = ({}) => {
   const { data: AllEvents, isLoading } = api.events.getAllEvents.useQuery();
