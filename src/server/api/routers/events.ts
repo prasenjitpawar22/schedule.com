@@ -41,8 +41,8 @@ export const eventsRouter = createTRPCRouter({
         .then(() => {
           return "deleted";
         })
-        .catch((e) => {
-          throw new Error(e);
+        .catch((e: Error) => {
+          throw new Error(e.message);
         });
     }),
 });
