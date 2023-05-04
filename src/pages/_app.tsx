@@ -9,10 +9,7 @@ import { ThemeProvider } from "next-themes";
 import Layout from "../components/Layout";
 import { NextPage, NextPageContext } from "next";
 import { ReactElement, ReactNode } from "react";
-
-// export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-//   getLayout?: (page: ReactElement) => ReactNode;
-// };
+import "react-datepicker/dist/react-datepicker.css";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;

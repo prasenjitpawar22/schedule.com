@@ -4,6 +4,7 @@ import { api } from "@/src/utils/api";
 import { NextPage } from "next";
 import AllEventsCard from "@/src/components/AllEventsCard";
 import { CreateEvent } from "@/src/components/CreateEvent";
+// import {} from 'next-auth/'
 
 const Event: NextPage = ({}) => {
   const { data: AllEvents, isLoading } = api.events.getAllEvents.useQuery();

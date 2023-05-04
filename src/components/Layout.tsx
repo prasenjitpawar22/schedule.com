@@ -1,6 +1,6 @@
 import React from "react";
 
-import MainSidebar from "./ui/main-sidebar";
+import MainSidebar from "./main-sidebar";
 
 interface GlobalLayout {
   children: React.ReactNode;

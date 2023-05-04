@@ -12,9 +12,9 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <>
-      <div>
+      <div className="flex min-h-screen items-center justify-center">
         {" "}
-        <p> {hello.data?.greeting} </p>{" "}
+        <p className="text-4xl"> {`Landing Page`} </p>{" "}
       </div>
     </>
   );
