@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { Badge } from "@/src/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,6 +20,8 @@ import { api } from "../utils/api";
 import { Events } from "@prisma/client";
 import { IEventDto } from "../@types";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { Label } from "./ui/label";
 
 interface Props {
   AllEventsState: Events[] | undefined;
@@ -30,6 +32,11 @@ interface Props {
 
 export const CreateEvent = (props: Props) => {
   const { setAllEventsState, AllEventsState, open, setOpen } = props;
+  const {
+    data: userSession,
+    status: userSessionStatus,
+    update: userUpdateSession,
+  } = useSession();
   const { refetch } = api.events.getAllEvents.useQuery();
 
   const [eventFormData, setEventFormData] = useState<IEventDto>({
@@ -79,7 +86,7 @@ export const CreateEvent = (props: Props) => {
       <AlertDialogTrigger asChild>
         <Button onClick={() => setOpen(true)}>Create</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="flex h-4/5 flex-col justify-between sm:max-w-[425px]">
+      <AlertDialogContent className="flex flex-col justify-between xs:h-full sm:h-fit sm:max-w-[425px]">
         <div className="flex flex-col gap-4">
           <AlertDialogHeader>
             <AlertDialogTitle>Create Event</AlertDialogTitle>
@@ -138,6 +145,7 @@ export const CreateEvent = (props: Props) => {
               />
             </div>
             <div className="flex items-center gap-1">
+              {/* TODO: add city state and country for more precise event location  */}
               <Input
                 id="location"
                 placeholder="location"
@@ -165,6 +173,15 @@ export const CreateEvent = (props: Props) => {
                 }
                 id="description"
               />
+            </div>
+            <div className="flex items-center ">
+              {/* TODO: add organizers: default will be event creator  */}
+              <Label className="flex items-center gap-1">
+                Organizers:{" "}
+                <div className="flex gap-1">
+                  <Badge variant={"default"}> {userSession?.user.name}</Badge>
+                </div>
+              </Label>
             </div>
           </div>
         </div>
