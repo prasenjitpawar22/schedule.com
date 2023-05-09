@@ -83,3 +83,86 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+.react-datepicker {
+  /* border-radius: hsl(var(--radius)) !important; */
+  /* border-radius: 0.5rem !important; */
+  display: inline-block;
+  position: relative;
+  background-color: hsl(var(--background)) !important;
+  border-radius: var(--radius) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.react-datepicker__month-container {
+  float: left;
+  color: hsl(var(--primary));
+  background-color: hsl(var(--background));
+  border-color: hsl(var(--border)) !important;
+}
+
+.react-datepicker__header {
+  color: hsl(var(--ternary)) !important;
+  background-color: hsl(var(--background)) !important;
+  border-radius: var(--radius) !important;
+  border-color: hsl(var(--border)) !important;
+}
+.react-datepicker__time-container {
+  border-radius: var(--radius) !important;
+  border-color: hsl(var(--border)) !important;
+}
+.react-datepicker__day {
+  color: hsl(var(--primary)) !important;
+}
+.react-datepicker__day:hover {
+  color: hsl(var(--ternary)) !important;
+}
+.react-datepicker__navigation {
+  color: hsl(var(--ternary)) !important;
+  background-color: hsl(var(--background)) !important;
+}
+.react-datepicker__day-name {
+  color: hsl(var(--muted-foreground)) !important;
+}
+.react-datepicker__current-month {
+  color: hsl(var(--primary)) !important;
+}
+.react-datepicker-time__header {
+  color: hsl(var(--primary)) !important;
+}
+.react-datepicker__time-list-item {
+  color: hsl(var(--primary)) !important;
+  background-color: hsl(var(--background)) !important;
+}
+
+.react-datepicker__day--selected {
+  color: hsl(var(--ternary)) !important;
+  background-color: hsl(var(--primary)) !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--primary)) !important;
+}
+.react-datepicker__time-list-item:hover {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--primary)) !important;
+}
+
+.react-datepicker__time-list-item--selected {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--ternary)) !important;
+}
+.react-datepicker__time-list-item:hover {
+  background-color: hsl(var(--primary));
+}
+
+.react-datepicker__triangle::before {
+  border-bottom-color: none !important;
+  border: none !important;
+}
+
+.react-datepicker__triangle::after {
+  border-top-color: none !important;
+  border: none !important;
+}

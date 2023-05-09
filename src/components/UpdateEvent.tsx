@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   AlertDialog,
@@ -15,16 +15,94 @@ import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
 import ReactDatePicker from "react-datepicker";
 import { type Events } from "@prisma/client";
+import { IEvents } from "../@types";
+import { api } from "../utils/api";
+import { Loader2 } from "lucide-react";
 
 interface Props {
-  event: Events;
+  event: IEvents;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  AllEventsState: IEvents[] | undefined;
+  setAllEventsState: React.Dispatch<React.SetStateAction<IEvents[]>>;
 }
 
-const UpdateEvent = ({ event }: Props) => {
+const UpdateEvent = ({
+  event,
+  open,
+  setOpen,
+  AllEventsState,
+  setAllEventsState,
+}: Props) => {
+  const { refetch, isLoading: refetchLoading } =
+    api.events.getAllEvents.useQuery();
+
+  const [eventUpdateFormState, setEventUpdateFormState] =
+    useState<IEvents>(event);
+
+  const { mutateAsync, isLoading } = api.events.updateEvent.useMutation();
+
+  // handle update location
+  function handleEventLocationUpdate(
+    id: string,
+    type: string,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const objectToUpdate = eventUpdateFormState.EventLocations.find(
+      (loc) => loc.id === id
+    );
+
+    if (objectToUpdate) {
+      if (type === "city") objectToUpdate.city! = e.target.value;
+      if (type === "state") objectToUpdate.state! = e.target.value;
+      if (type === "country") objectToUpdate.country! = e.target.value;
+
+      return objectToUpdate;
+    }
+  }
+
+  async function handleUpdate() {
+    console.log(eventUpdateFormState);
+    const {
+      EventLocations,
+      EventOrganizres,
+      description,
+      endDate,
+      id,
+      startDate,
+      title,
+      userId,
+    } = eventUpdateFormState;
+    mutateAsync({
+      description,
+      endDate,
+      EventLocations,
+      EventOrganizres,
+      id,
+      startDate,
+      title,
+      userId,
+    })
+      .then(() => {
+        // TODO: make improvement here currently refetching the events
+        refetch()
+          .then((res) => {
+            if (res.data) {
+              setAllEventsState(res.data);
+            }
+            setOpen(false);
+          })
+          .catch((e) => console.log(e));
+      })
+      .catch((e) => console.log(e));
+  }
+
   return (
-    <AlertDialog>
+    <AlertDialog open={open}>
       <AlertDialogTrigger asChild>
-        <Button className="w-fit">Update</Button>
+        <Button onClick={() => setOpen(true)} className="w-fit">
+          Update
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="flex h-4/5 flex-col justify-between sm:max-w-[425px]">
         <div className="flex flex-col gap-4">
@@ -36,13 +114,13 @@ const UpdateEvent = ({ event }: Props) => {
               <Input
                 id="title"
                 placeholder="title"
-                value={event?.title}
-                //   onChange={(e) =>
-                //     setEventFormData({
-                //       ...eventFormData,
-                //       title: e.target.value,
-                //     })
-                //   }
+                value={eventUpdateFormState.title}
+                onChange={(e) =>
+                  setEventUpdateFormState({
+                    ...eventUpdateFormState,
+                    title: e.target.value,
+                  })
+                }
                 className=""
               />
             </div>
@@ -54,13 +132,13 @@ const UpdateEvent = ({ event }: Props) => {
                 showTimeSelect
                 placeholderText="Event start date and time"
                 onChange={(date) => {
-                  // date &&
-                  //   setEventFormData({
-                  //     ...eventFormData,
-                  //     startDate: date,
-                  //   });
+                  date &&
+                    setEventUpdateFormState({
+                      ...eventUpdateFormState,
+                      startDate: date,
+                    });
                 }}
-                selected={event.startDate}
+                selected={eventUpdateFormState.startDate}
                 timeFormat="HH:mm"
                 dateFormat="MMMM d, yyyy h:mm aa"
               />
@@ -73,43 +151,91 @@ const UpdateEvent = ({ event }: Props) => {
                 placeholderText="Event end date and time"
                 showTimeSelect
                 onChange={(date) => {
-                  // date &&
-                  //   setEventFormData({
-                  //     ...eventFormData,
-                  //     endDate: date,
-                  //   });
+                  date &&
+                    setEventUpdateFormState({
+                      ...eventUpdateFormState,
+                      endDate: date,
+                    });
                 }}
-                selected={event.endDate}
+                selected={eventUpdateFormState.endDate}
                 timeFormat="HH:mm"
                 dateFormat="MMMM d, yyyy h:mm aa"
               />
             </div>
-            <div className="flex items-center gap-1">
-              <Input
-                id="location"
-                placeholder="location"
-                // autoComplete="off"
-                value={event?.location}
-                //   onChange={(e) =>
-                //     setEventFormData({
-                //       ...eventFormData,
-                //       location: e.target.value,
-                //     })
-                //   }
-                className=""
-              />
-            </div>
+            {event.EventLocations.map((location, index) => (
+              <div key={index} className="flex items-center gap-1">
+                <Input
+                  id="city"
+                  placeholder="city"
+                  // autoComplete="off"
+                  value={location?.city}
+                  onChange={(e) =>
+                    setEventUpdateFormState({
+                      ...eventUpdateFormState,
+                      //  city: e.target.value,
+                      EventLocations: event.EventLocations.map((loc) =>
+                        loc.id === location.id
+                          ? handleEventLocationUpdate(location.id, "city", e)!
+                          : loc
+                      ),
+                    })
+                  }
+                  className=""
+                />
+                <Input
+                  id="state"
+                  placeholder="state"
+                  // autoComplete="off"
+                  value={location?.state}
+                  onChange={(e) =>
+                    setEventUpdateFormState({
+                      ...eventUpdateFormState,
+                      //  city: e.target.value,
+                      EventLocations: event.EventLocations.map((loc) =>
+                        loc.id === location.id
+                          ? handleEventLocationUpdate(location.id, "state", e)!
+                          : loc
+                      ),
+                    })
+                  }
+                  className=""
+                />
+                <Input
+                  id="country"
+                  placeholder="country"
+                  // autoComplete="off"
+                  value={location?.country}
+                  onChange={(e) =>
+                    setEventUpdateFormState({
+                      ...eventUpdateFormState,
+                      //  city: e.target.value,
+                      EventLocations: event.EventLocations.map((loc) =>
+                        loc.id === location.id
+                          ? handleEventLocationUpdate(
+                              location.id,
+                              "country",
+                              e
+                            )!
+                          : loc
+                      ),
+                    })
+                  }
+                  className=""
+                />
+              </div>
+            ))}
+
             <div className="flex items-center ">
               <Textarea
                 className="resize-none"
                 placeholder="description"
-                value={event.description}
-                //   onChange={(e) =>
-                //     setEventFormData({
-                //       ...eventFormData,
-                //       description: e.target.value,
-                //     })
-                //   }
+                value={eventUpdateFormState.description}
+                onChange={(e) =>
+                  setEventUpdateFormState({
+                    ...eventUpdateFormState,
+                    description: e.target.value,
+                  })
+                }
                 id="description"
               />
             </div>
@@ -117,7 +243,13 @@ const UpdateEvent = ({ event }: Props) => {
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Create</AlertDialogAction>
+          <Button
+            className={`flex items-center justify-center`}
+            onClick={handleUpdate}
+          >
+            Update
+            {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { Badge } from "@/src/components/ui/badge";
 import {
   AlertDialog,
@@ -15,17 +15,18 @@ import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
 
 import type { IEventFormData } from "../types";
-import ReactDatePicker from "react-datepicker";
+import ReactDatePicker, { CalendarContainer } from "react-datepicker";
 import { api } from "../utils/api";
-import { Events } from "@prisma/client";
-import { IEventDto } from "../@types";
+import { EventOrganizres, Events } from "@prisma/client";
+import { IEventDto, IEvents, IOrganizerFormData } from "../@types";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Label } from "./ui/label";
+import { Calendar } from "./ui/calendar";
 
 interface Props {
-  AllEventsState: Events[] | undefined;
-  setAllEventsState: React.Dispatch<React.SetStateAction<Events[] | undefined>>;
+  AllEventsState: IEvents[] | undefined;
+  setAllEventsState: React.Dispatch<React.SetStateAction<IEvents[]>>;
   open: boolean | undefined;
   setOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
 }
@@ -39,30 +40,59 @@ export const CreateEvent = (props: Props) => {
   } = useSession();
   const { refetch } = api.events.getAllEvents.useQuery();
 
+  const [organizersFormData, setOrganizersFormData] = useState<
+    IOrganizerFormData[]
+  >([
+    {
+      organizerName: userSession?.user?.name!,
+      eventsId: userSession?.user.id!,
+    },
+  ]);
+
   const [eventFormData, setEventFormData] = useState<IEventDto>({
     description: "",
     endDate: new Date(),
-    location: "",
     startDate: new Date(),
     title: "",
+    city: "",
+    country: "",
+    state: "",
+    organizers: organizersFormData,
   });
 
   const { mutateAsync, isLoading } = api.events.createEvent.useMutation();
 
   const handleEventCreate = () => {
-    const { description, endDate, location, startDate, title } = eventFormData;
+    console.log(eventFormData);
+    const {
+      description,
+      endDate,
+      startDate,
+      title,
+      country,
+      state,
+      city,
+      organizers,
+    } = eventFormData;
+
     mutateAsync({
       description: description,
       title: title,
       startDate: startDate,
       endDate: endDate,
-      location: location,
+      city,
+      country,
+      state,
+      userId: userSession?.user?.id,
+      organizerName: organizers.map((d) => d.organizerName),
     })
       .then(() => {
         // less optmiszed fetching all events again
         refetch()
           .then((res) => {
-            setAllEventsState(res.data);
+            if (res.data) {
+              setAllEventsState(res.data);
+            }
             setOpen(false);
           })
           .catch((e) => console.log(e));
@@ -72,15 +102,35 @@ export const CreateEvent = (props: Props) => {
         setOpen(false);
       });
 
+    // eventFormData.organizerName.filter((s)=> s.organizerName)
     setEventFormData({
       description: "",
       endDate: new Date(),
-      location: "",
       startDate: new Date(),
       title: "",
+      city: "",
+      country: "",
+      state: "",
+      organizers: organizersFormData,
     });
   };
 
+  interface ICal {
+    className: string;
+    children: ReactNode;
+  }
+  const MyContainer = ({ className, children }: ICal) => {
+    console.log("sda", className);
+
+    return (
+      // <div style={{ padding: "16px", background: "#216ba5", color: "#fff" }}>
+      <CalendarContainer className={`bg-ternary text-primary`}>
+        {/* <div className="bg-pink-200">What is your favorite day?</div> */}
+        <div className="bg-black">{children}</div>
+      </CalendarContainer>
+      // </div>
+    );
+  };
   return (
     <AlertDialog open={open}>
       <AlertDialogTrigger asChild>
@@ -111,6 +161,7 @@ export const CreateEvent = (props: Props) => {
                 className={
                   "flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 }
+                // calendarContainer={MyContainer}
                 showTimeSelect
                 placeholderText="Event start date and time"
                 onChange={(date) => {
@@ -128,7 +179,7 @@ export const CreateEvent = (props: Props) => {
             <div className="flex items-center gap-1">
               <ReactDatePicker
                 className={
-                  "flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  "flex h-10 w-full rounded-md border border-input bg-ternary px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 }
                 placeholderText="Event end date and time"
                 showTimeSelect
@@ -145,16 +196,41 @@ export const CreateEvent = (props: Props) => {
               />
             </div>
             <div className="flex items-center gap-1">
-              {/* TODO: add city state and country for more precise event location  */}
               <Input
-                id="location"
-                placeholder="location"
+                id="city"
+                placeholder="city"
                 // autoComplete="off"
-                value={eventFormData?.location}
+                value={eventFormData?.city}
                 onChange={(e) =>
                   setEventFormData({
                     ...eventFormData,
-                    location: e.target.value,
+                    city: e.target.value,
+                  })
+                }
+                className=""
+              />
+              <Input
+                id="state"
+                placeholder="state"
+                // autoComplete="off"
+                value={eventFormData?.state}
+                onChange={(e) =>
+                  setEventFormData({
+                    ...eventFormData,
+                    state: e.target.value,
+                  })
+                }
+                className=""
+              />
+              <Input
+                id="country"
+                placeholder="country"
+                // autoComplete="off"
+                value={eventFormData?.country}
+                onChange={(e) =>
+                  setEventFormData({
+                    ...eventFormData,
+                    country: e.target.value,
                   })
                 }
                 className=""

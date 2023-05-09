@@ -11,14 +11,17 @@ import UpdateEvent from "./UpdateEvent";
 import { Button } from "./ui/button";
 import { api } from "../utils/api";
 import EmptyEventsCard from "./EmptyEventsCard";
+import { IEvents } from "../@types";
 
 interface Props {
-  AllEventsState: Events[] | undefined;
-  setAllEventsState: React.Dispatch<React.SetStateAction<Events[] | undefined>>;
+  AllEventsState: IEvents[];
+  setAllEventsState: React.Dispatch<React.SetStateAction<IEvents[]>>;
 }
 
 const AllEventsCard = (props: Props) => {
   const { AllEventsState, setAllEventsState } = props;
+
+  const [updateFormOpen, setUpdateFormOpen] = useState<boolean>(false);
 
   const { mutateAsync } = api.events.deletEvent.useMutation();
 
@@ -50,14 +53,23 @@ const AllEventsCard = (props: Props) => {
                         Yes. It adheres to the WAI-ARIA design pattern.{" "}
                         {item.description}
                       </span>
-                      <span className="capitalize">
-                        {item.location}:{" "}
-                        {item.startDate.toString().split("GMT")[0]}
-                        {" - "}
-                        {item.endDate.toString().split("GMT")[0]}
-                      </span>
+                      {item.EventLocations.map((location, index) => (
+                        <span key={index} className="capitalize">
+                          {location.city} {location.state} {location.country}:
+                          {item.startDate.toString().split("GMT")[0]}
+                          {" - "}
+                          {item.endDate.toString().split("GMT")[0]}
+                        </span>
+                      ))}
+
                       <div className="flex gap-2">
-                        <UpdateEvent event={item} />
+                        <UpdateEvent
+                          AllEventsState={AllEventsState}
+                          setAllEventsState={setAllEventsState}
+                          open={updateFormOpen}
+                          setOpen={setUpdateFormOpen}
+                          event={item}
+                        />
                         <Button
                           variant="outline"
                           className="w-fit"

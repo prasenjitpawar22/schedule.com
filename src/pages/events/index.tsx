@@ -4,16 +4,18 @@ import { api } from "@/src/utils/api";
 import { NextPage } from "next";
 import AllEventsCard from "@/src/components/AllEventsCard";
 import { CreateEvent } from "@/src/components/CreateEvent";
+import { IEvents } from "@/src/@types";
 // import {} from 'next-auth/'
 
 const Event: NextPage = ({}) => {
   const { data: AllEvents, isLoading } = api.events.getAllEvents.useQuery();
+  // const {} =
   const [open, setOpen] = useState<boolean | undefined>(false);
 
-  const [AllEventsState, setAllEventsState] = useState(AllEvents);
+  const [AllEventsState, setAllEventsState] = useState<IEvents[]>(AllEvents!);
 
   useEffect(() => {
-    setAllEventsState(AllEvents);
+    setAllEventsState(AllEvents!);
   }, [isLoading]);
 
   //TODO: add shimmer effect
