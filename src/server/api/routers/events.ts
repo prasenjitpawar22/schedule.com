@@ -159,22 +159,20 @@ export const eventsRouter = createTRPCRouter({
         const { eventsId, ...newItem } = item;
         return newItem;
       });
-      console.log(tes);
-
-      tes.forEach(async ({ city, country, id, state }) => {
+      for (const { city, country, id, state } of tes) {
         await ctx.prisma.eventLocations.update({
           where: { id },
           data: { city, country, state },
         });
-      });
+      }
 
       // update organizers
-      EventOrganizres.forEach(async ({ id, organizerName, eventsId }) => {
+      for (const { organizerName, id } of EventOrganizres) {
         await ctx.prisma.eventOrganizres.update({
           where: { id },
           data: { organizerName },
         });
-      });
+      }
 
       const event = await ctx.prisma.events.update({
         where: { id: input.id },

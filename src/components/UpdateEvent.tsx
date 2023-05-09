@@ -53,15 +53,15 @@ const UpdateEvent = ({
     );
 
     if (objectToUpdate) {
-      if (type === "city") objectToUpdate.city! = e.target.value;
-      if (type === "state") objectToUpdate.state! = e.target.value;
-      if (type === "country") objectToUpdate.country! = e.target.value;
+      if (type === "city") objectToUpdate.city = e.target.value;
+      if (type === "state") objectToUpdate.state = e.target.value;
+      if (type === "country") objectToUpdate.country = e.target.value;
 
       return objectToUpdate;
     }
   }
 
-  async function handleUpdate() {
+  function handleUpdate() {
     console.log(eventUpdateFormState);
     const {
       EventLocations,

@@ -41,11 +41,11 @@ export const CreateEvent = (props: Props) => {
   const { refetch } = api.events.getAllEvents.useQuery();
 
   const [organizersFormData, setOrganizersFormData] = useState<
-    IOrganizerFormData[]
+    IOrganizerFormData[] | undefined
   >([
     {
-      organizerName: userSession?.user?.name!,
-      eventsId: userSession?.user.id!,
+      organizerName: userSession?.user?.name ?? "",
+      eventsId: userSession?.user?.id ?? "",
     },
   ]);
 
@@ -57,7 +57,7 @@ export const CreateEvent = (props: Props) => {
     city: "",
     country: "",
     state: "",
-    organizers: organizersFormData,
+    organizers: organizersFormData!,
   });
 
   const { mutateAsync, isLoading } = api.events.createEvent.useMutation();
@@ -111,7 +111,7 @@ export const CreateEvent = (props: Props) => {
       city: "",
       country: "",
       state: "",
-      organizers: organizersFormData,
+      organizers: organizersFormData!,
     });
   };
 
