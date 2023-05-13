@@ -60,6 +60,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     Events        Events[]
+    Team          Team[]
 }
 
 model VerificationToken {
@@ -78,8 +79,10 @@ model Events {
     description     String            @db.VarChar(500)
     user            User              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     userId          String
+    //TODO: add visibility - public or private default private
     EventOrganizres EventOrganizres[]
     EventLocations  EventLocations[]
+    EventRequest    EventRequest[]
 
     @@index([userId])
 }
@@ -100,6 +103,61 @@ model EventOrganizres {
     organizerName String @db.VarChar(60)
     event         Events @relation(fields: [eventsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     eventsId      String
+
+    @@index([eventsId])
+}
+
+model Team {
+    id                String              @id @default(cuid())
+    teamName          String
+    user              User                @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId            String
+    TeamMembers       TeamMembers[]
+    TeamMemberRequest TeamMemberRequest[]
+
+    @@index([userId])
+}
+
+model TeamMembers {
+    id          String @id @default(cuid())
+    memberName  String
+    memberEmail String
+    team        Team   @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    teamId      String
+    //TODO: is it requird ?  status for something like active       
+
+    @@index([teamId])
+}
+
+model Requests {
+    id                  String             @id @default(cuid())
+    teamMemberRequest   TeamMemberRequest? @relation(fields: [teamMemberRequestId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    teamMemberRequestId String?
+    eventRequest        EventRequest?      @relation(fields: [eventRequestId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    eventRequestId      String?
+
+    @@index([teamMemberRequestId])
+    @@index([eventRequestId])
+}
+
+model TeamMemberRequest {
+    id               String     @id @default(cuid())
+    fromMemeberEmail String
+    fromMemberName   String
+    team             Team       @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    teamId           String
+    toMemberEmail    String
+    toMemberName     String
+    Requests         Requests[]
+
+    @@index([teamId])
+}
+
+model EventRequest {
+    id       String     @id @default(cuid())
+    event    Events     @relation(fields: [eventsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    eventsId String
+    Requests Requests[]
 
     @@index([eventsId])
 }

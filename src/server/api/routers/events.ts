@@ -1,10 +1,6 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  // protectedProcedure,
-} from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
 // envents router
@@ -19,6 +15,7 @@ export const eventsRouter = createTRPCRouter({
 
   getAllEvents: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.events.findMany({
+      where: { userId: ctx.session.user.id },
       select: {
         description: true,
         endDate: true,

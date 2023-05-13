@@ -1,4 +1,11 @@
-import type { Events, EventLocations, EventOrganizres } from "@prisma/client";
+import type {
+  Events,
+  EventLocations,
+  EventOrganizres,
+  TeamMembers,
+  Team,
+  TeamMemberRequest,
+} from "@prisma/client";
 
 // export type Event
 export interface IOrganizerFormData {
@@ -17,4 +24,23 @@ export type IEventDto = Omit<
 export type IEvents = Events & {
   EventLocations: EventLocations[];
   EventOrganizres: EventOrganizres[];
+};
+
+export type ITeams = Team & {
+  TeamMembers: TeamMembers[];
+};
+
+// export type ITeamMemberRequestAllData = TeamMemberRequest &
+// Omit<Team, "userId">;
+
+export type ITeamMemberRequestAllData = {
+  team: {
+    id: string;
+    teamName: string;
+  } | null;
+  id: string;
+  fromMemeberEmail: string;
+  fromMemberName: string;
+  toMemberEmail: string;
+  toMemberName: string;
 };

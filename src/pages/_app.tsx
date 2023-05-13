@@ -1,4 +1,4 @@
-import { AppProps, type AppType } from "next/app";
+import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
@@ -7,11 +7,14 @@ import { api } from "@/utils/api";
 import "@/styles/globals.css";
 import { ThemeProvider } from "next-themes";
 import Layout from "../components/Layout";
-import { NextPage, NextPageContext } from "next";
+import { NextPage } from "next";
 import { ReactElement, ReactNode } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+export type NextPageWithLayout<
+  P = { providers: any; csrfToken: any },
+  IP = P
+> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
@@ -28,7 +31,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ThemeProvider enableSystem={true} attribute="class">
-        {getLayout(<Component {...pageProps} />)}
+        {getLayout(
+          <>
+            <Component {...pageProps} />
+          </>
+        )}
       </ThemeProvider>
     </SessionProvider>
   );

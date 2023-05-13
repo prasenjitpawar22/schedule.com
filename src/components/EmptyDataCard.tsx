@@ -32,21 +32,17 @@ import { useTheme } from "next-themes";
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { IEventDateInput, IEventFormData } from "../types";
 import ReactDatePicker from "react-datepicker";
 import { CreateEvent } from "./CreateEvent";
 
 interface Props {
-  setEventFormData: React.Dispatch<React.SetStateAction<IEventFormData>>;
-  eventFormData: IEventFormData;
+  // setEventFormData: React.Dispatch<React.SetStateAction<IEventFormData>>;
+  // eventFormData: IEventFormData;
+  mainText: string;
+  description: string;
 }
 
-const EmptyEventsCard = () => {
-  // function handleEventCreate() {
-  //   // setEventFormData({});
-  //   console.log(eventFormData);
-  // }
-
+const EmptyDataCard = ({ description, mainText }: Props) => {
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -57,26 +53,17 @@ const EmptyEventsCard = () => {
         >
           <div>
             <CardHeader>
-              <CardTitle>
-                {`Look's like you don't have any event setup!`}
-              </CardTitle>
-              <CardDescription>{`Create a event`}</CardDescription>
+              <CardTitle>{`Look's like you don't have ${mainText}`}</CardTitle>
+              <CardDescription>{`Create a ${description}`}</CardDescription>
             </CardHeader>
             <CardContent className="">{/* <CreateEvent /> */}</CardContent>
           </div>
 
-          <CardFooter>
-            {/* <Image
-                  alt="empty event"
-                  src={`/empty_events.svg`}
-                  width={200}
-                  height={200}
-                /> */}
-          </CardFooter>
+          <CardFooter></CardFooter>
         </Card>
       </div>
     </div>
   );
 };
 
-export default EmptyEventsCard;
+export default EmptyDataCard;

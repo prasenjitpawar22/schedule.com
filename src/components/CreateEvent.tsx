@@ -2,7 +2,6 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { Badge } from "@/src/components/ui/badge";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
@@ -14,15 +13,12 @@ import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
 
-import type { IEventFormData } from "../types";
-import ReactDatePicker, { CalendarContainer } from "react-datepicker";
+import ReactDatePicker from "react-datepicker";
 import { api } from "../utils/api";
-import { EventOrganizres, Events } from "@prisma/client";
 import { IEventDto, IEvents, IOrganizerFormData } from "../@types";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Label } from "./ui/label";
-import { Calendar } from "./ui/calendar";
 
 interface Props {
   AllEventsState: IEvents[] | undefined;
@@ -35,8 +31,8 @@ export const CreateEvent = (props: Props) => {
   const { setAllEventsState, AllEventsState, open, setOpen } = props;
   const {
     data: userSession,
-    status: userSessionStatus,
-    update: userUpdateSession,
+    // status: userSessionStatus,
+    // update: userUpdateSession,
   } = useSession();
   const { refetch } = api.events.getAllEvents.useQuery();
 
@@ -63,7 +59,7 @@ export const CreateEvent = (props: Props) => {
   const { mutateAsync, isLoading } = api.events.createEvent.useMutation();
 
   const handleEventCreate = () => {
-    console.log(eventFormData);
+    // console.log(eventFormData);
     const {
       description,
       endDate,
@@ -115,22 +111,6 @@ export const CreateEvent = (props: Props) => {
     });
   };
 
-  interface ICal {
-    className: string;
-    children: ReactNode;
-  }
-  const MyContainer = ({ className, children }: ICal) => {
-    console.log("sda", className);
-
-    return (
-      // <div style={{ padding: "16px", background: "#216ba5", color: "#fff" }}>
-      <CalendarContainer className={`bg-ternary text-primary`}>
-        {/* <div className="bg-pink-200">What is your favorite day?</div> */}
-        <div className="bg-black">{children}</div>
-      </CalendarContainer>
-      // </div>
-    );
-  };
   return (
     <AlertDialog open={open}>
       <AlertDialogTrigger asChild>
@@ -161,7 +141,6 @@ export const CreateEvent = (props: Props) => {
                 className={
                   "flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 }
-                // calendarContainer={MyContainer}
                 showTimeSelect
                 placeholderText="Event start date and time"
                 onChange={(date) => {

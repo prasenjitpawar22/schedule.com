@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
-import { Mail, Calendar, Settings, PersonStanding } from "lucide-react";
+import { Mail, Calendar, Settings, PersonStanding, Bell } from "lucide-react";
 
 import { Button } from "./ui/button";
 import AuthShowcase from "./auth-show-case";
@@ -27,10 +27,16 @@ const MainSidebar = () => {
           <Button className="w-full justify-start bg-inherit  font-semibold capitalize text-foreground hover:text-secondary">
             <Calendar className="mr-2 h-4 w-4 font-semibold" /> calendar
           </Button>
-
-          <Button className="w-full justify-start bg-inherit  font-semibold capitalize text-foreground hover:text-secondary">
-            <PersonStanding className="mr-2 h-4 w-4 font-semibold" /> Team
-          </Button>
+          <Link href="/teams">
+            <Button className="w-full justify-start bg-inherit  font-semibold capitalize text-foreground hover:text-secondary">
+              <PersonStanding className="mr-2 h-4 w-4 font-semibold" /> Team
+            </Button>
+          </Link>
+          <Link href="/requests">
+            <Button className="w-full justify-start bg-inherit  font-semibold capitalize text-foreground hover:text-secondary">
+              <Mail className="mr-2 h-4 w-4 font-semibold" /> Requests{" "}
+            </Button>
+          </Link>
           <Link href="/settings">
             <Button className="w-full justify-start bg-inherit  font-semibold capitalize text-foreground hover:text-secondary">
               <Settings className="mr-2 h-4 w-4 font-semibold" /> settings{" "}

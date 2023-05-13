@@ -1,20 +1,7 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useTheme } from "next-themes";
-import { NextPage } from "next";
 import SettingsThemeCard from "@/src/components/SettingsThemeCard";
 
-const index: NextPage = () => {
+const Settings = () => {
   return (
     <>
       <div className="m-12">
@@ -32,4 +19,4 @@ const index: NextPage = () => {
   );
 };
 
-export default index;
+export default Settings;

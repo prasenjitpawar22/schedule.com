@@ -100,7 +100,7 @@ const UpdateEvent = ({
   return (
     <AlertDialog open={open}>
       <AlertDialogTrigger asChild>
-        <Button onClick={() => setOpen(true)} className="w-fit">
+        <Button size={"sm"} onClick={() => setOpen(true)} className="w-fit">
           Update
         </Button>
       </AlertDialogTrigger>
@@ -242,7 +242,9 @@ const UpdateEvent = ({
           </div>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={() => setOpen(false)}>
+            Cancel
+          </AlertDialogCancel>
           <Button
             className={`flex items-center justify-center`}
             onClick={handleUpdate}

@@ -7,7 +7,7 @@ import { CreateEvent } from "@/src/components/CreateEvent";
 import { IEvents } from "@/src/@types";
 // import {} from 'next-auth/'
 
-const Event: NextPage = ({}) => {
+const Event = ({}) => {
   const { data: AllEvents, isLoading } = api.events.getAllEvents.useQuery();
   // const {} =
   const [open, setOpen] = useState<boolean | undefined>(false);
@@ -22,7 +22,7 @@ const Event: NextPage = ({}) => {
   if (isLoading) return <div>loading</div>;
   return (
     <div className="m-12">
-      <div className="mb-12 flex items-baseline justify-between">
+      <div className="mb-12 flex items-baseline justify-between gap-24">
         <h1 className="scroll-m-20 text-xl font-semibold tracking-tight lg:text-2xl">
           Events
         </h1>

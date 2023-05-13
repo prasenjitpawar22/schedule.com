@@ -9,8 +9,6 @@ const Home: NextPageWithLayout = () => {
 
   if (!hello) return null;
 
-  console.log(hello.data);
-
   return (
     <>
       <div className="flex min-h-screen items-center justify-center">

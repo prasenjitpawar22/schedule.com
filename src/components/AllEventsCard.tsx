@@ -10,8 +10,9 @@ import { type Events } from "@prisma/client";
 import UpdateEvent from "./UpdateEvent";
 import { Button } from "./ui/button";
 import { api } from "../utils/api";
-import EmptyEventsCard from "./EmptyEventsCard";
+import EmptyDataCard from "./EmptyDataCard";
 import { IEvents } from "../@types";
+import { Badge } from "./ui/badge";
 
 interface Props {
   AllEventsState: IEvents[];
@@ -34,7 +35,8 @@ const AllEventsCard = (props: Props) => {
       .catch((e) => console.log(e));
   }
 
-  if (!AllEventsState?.length) return <EmptyEventsCard />;
+  if (!AllEventsState?.length)
+    return <EmptyDataCard description="event" mainText="any event planned!" />;
 
   return (
     <>
@@ -61,7 +63,15 @@ const AllEventsCard = (props: Props) => {
                           {item.endDate.toString().split("GMT")[0]}
                         </span>
                       ))}
-
+                      <span className="mb-2 capitalize">
+                        Organizers:{" "}
+                        {item.EventOrganizres.map((org, index) => (
+                          <Badge key={index} variant={"secondary"}>
+                            {" "}
+                            {org.organizerName}
+                          </Badge>
+                        ))}
+                      </span>
                       <div className="flex gap-2">
                         <UpdateEvent
                           AllEventsState={AllEventsState}
@@ -70,7 +80,9 @@ const AllEventsCard = (props: Props) => {
                           setOpen={setUpdateFormOpen}
                           event={item}
                         />
+                        <Button size={"sm"}>Send invites</Button>
                         <Button
+                          size={"sm"}
                           variant="outline"
                           className="w-fit"
                           onClick={() => handleEventDelete(item.id)}

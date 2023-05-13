@@ -6,9 +6,14 @@ import {
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
+import TwitterProvider from "next-auth/providers/twitter";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
+import { client } from "../utils/api";
+import { usercaller, usersRouter } from "./api/routers/users";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -37,6 +42,10 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  pages: {
+    signIn: "/auth/signin",
+    error: "/auth/error",
+  },
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
@@ -45,6 +54,19 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
+    signIn({ user, account, profile, email, credentials }) {
+      console.log("in si");
+
+      const isAllowedToSignIn = true;
+      if (isAllowedToSignIn) {
+        return true;
+      } else {
+        // Return false to display a default error message
+        return false;
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -57,6 +79,15 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
+    GitHubProvider({
+      clientId: env.GITHUB_ID,
+      clientSecret: env.GITHUB_SECRET,
+    }),
+    TwitterProvider({
+      clientId: env.TWITTER_CLIENT_ID,
+      clientSecret: env.TWITTER_CLIENT_SECRET,
+      // version: "2.0", // opt-in to Twitter OAuth 2.0
+    }),
 
     /**
      * ...add more providers here.
@@ -67,7 +98,37 @@ export const authOptions: NextAuthOptions = {
      *
      * @see https://next-auth.js.org/providers/github
      */
+    //TODO: for password based auth
+    // CredentialsProvider({
+    //   // The name to display on the sign in form (e.g. 'Sign in with...')
+    //   name: "Credentials",
+    //   // The credentials is used to generate a suitable form on the sign in page.
+    //   // You can specify whatever fields you are expecting to be submitted.
+    //   // e.g. domain, username, password, 2FA token, etc.
+    //   // You can pass any HTML attribute to the <input> tag through the object.
+    //   credentials: {
+    //     email: { label: "email", type: "text", placeholder: "jsmith" },
+    //     password: { label: "Password", type: "password" },
+    //   },
+    //   async authorize(credentials, req) {
+    //     try {
+    //       const user = await usercaller.getUserByEmail({
+    //         email: credentials?.email!,
+    //       });
+    //       console.log(req, "req");
+
+    //       if (user) {
+    //         return user;
+    //       }
+    //       return null;
+    //     } catch (e) {
+    //       console.log(e, "error");
+    //       return null;
+    //     }
+    //   },
+    // }),
   ],
+  // secret: env.JWT_SECRET,
 };
 
 /**
