@@ -6,6 +6,9 @@ import { Button } from "@/src/components/ui/button";
 
 import AllTeamsCard from "@/src/components/AllTeamsCard";
 import { ITeams } from "@/src/@types";
+import { Skeleton } from "@/src/components/ui/skeleton";
+import { useToast } from "@/src/components/ui/use-toast";
+import AllDataCardShimmer from "@/src/components/AllDataCardShimmer";
 
 const Teams = () => {
   const {
@@ -21,6 +24,8 @@ const Teams = () => {
   const { mutateAsync, isLoading: createTeamIsloading } =
     api.teams.createTeam.useMutation();
 
+  const { toast } = useToast();
+
   useEffect(() => {
     setTeams(allTeamsData);
   }, [allTeamsDataIsloading]);
@@ -34,6 +39,10 @@ const Teams = () => {
         teamName: createTeamName,
       })
         .then(async (res) => {
+          toast({
+            title: "Team created",
+          });
+
           //TODO: refetch all teams make more efficient method
           await refetch()
             .then((res) => {
@@ -45,11 +54,11 @@ const Teams = () => {
     })().catch((e) => console.log(e));
   };
 
-  if (allTeamsDataIsloading) return <div>loading</div>;
+  // if (allTeamsDataIsloading) return <div>loading</div>;
 
   return (
     <div className="m-12">
-      <div className="mb-12 flex items-baseline justify-between gap-24 sm:flex-col sm:gap-2 md:flex-row ">
+      <div className="mb-12 flex flex-wrap items-baseline justify-between  sm:flex-col sm:gap-2 md:flex-row ">
         <h1 className="scroll-m-20 text-xl font-semibold tracking-tight lg:text-2xl">
           Teams
         </h1>
@@ -66,7 +75,11 @@ const Teams = () => {
           </Button>
         </form>
       </div>
-      <AllTeamsCard allTeamsState={teams} setAllTeamsState={setTeams} />
+      {allTeamsDataIsloading ? (
+        <AllDataCardShimmer />
+      ) : (
+        <AllTeamsCard allTeamsState={teams} setAllTeamsState={setTeams} />
+      )}
     </div>
   );
 };

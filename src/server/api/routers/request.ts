@@ -47,7 +47,7 @@ export const requestRouter = createTRPCRouter({
       });
     }),
 
-  // get all team members
+  // get all team members request
   getAllMemberRequest: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session.user.email) throw new Error("invaild user ");
     const teamMemberRequests = await ctx.prisma.teamMemberRequest.findMany({
@@ -111,4 +111,49 @@ export const requestRouter = createTRPCRouter({
         where: { id: requestId },
       });
     }),
+
+  /* 
+  procedure for handling a event invite request  
+  - send email?
+  - add data enventInvitRequest table
+  */
+  sendEventInviteRequest: protectedProcedure
+    .input(
+      z.object({
+        toEmail: z.array(z.string()),
+        toName: z.string(),
+        fromEmail: z.string(),
+        fromName: z.string(),
+        event: z.object({
+          id: z.string(),
+        }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { event, fromEmail, fromName, toEmail, toName } = input;
+
+      if (!ctx.session.user.email || !ctx.session.user.name)
+        throw new Error("user not found");
+
+      // check if any toEmail already in the table
+      // return
+
+      const data = toEmail.map((toEmail, index) => {
+        return { toEmail, fromEmail, fromName, eventsId: event.id, toName: "" };
+      });
+
+      await ctx.prisma.eventAttendeRequest.createMany({
+        data: data,
+      });
+    }),
+
+  // get all request for event invites request
+  getAllEventInviteRequests: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.session.user.email) return;
+    console.log(ctx.session.user.email);
+
+    return await ctx.prisma.eventAttendeRequest.findMany({
+      where: { toEmail: ctx.session.user.email },
+    });
+  }),
 });

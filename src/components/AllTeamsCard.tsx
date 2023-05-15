@@ -75,7 +75,7 @@ const AllTeamsCard = (props: Props) => {
                         </span>
                       )}
 
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <AddTeamMember
                           teamId={team.id}
                           open={addTeamMemeberModelState}

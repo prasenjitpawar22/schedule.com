@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
@@ -12,13 +11,11 @@ import {
 } from "@/src/components/ui/alert-dialog";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { Textarea } from "@/src/components/ui/textarea";
-import ReactDatePicker from "react-datepicker";
-import { type Events } from "@prisma/client";
-import { IEvents } from "../@types";
 import { api } from "../utils/api";
 import { Loader2, X } from "lucide-react";
 import { Badge } from "./ui/badge";
+import { useToast } from "./ui/use-toast";
+import { TRPCError } from "@trpc/server";
 
 interface Props {
   open: boolean;
@@ -30,28 +27,40 @@ const AddTeamMember = ({ open, setOpen, teamId }: Props) => {
   const [memberEmail, setMemberEmail] = useState("");
   const [allMemberList, setAllMemberList] = useState<string[]>([]);
 
+  const { toast } = useToast();
+
   const { mutateAsync, isLoading } =
     api.request.sendMemberRequest.useMutation();
 
   async function handleRequestAddTeamMember() {
+    console.log(allMemberList);
+
     await mutateAsync({
       teamId,
       toMembersEmail: allMemberList,
       toMemberName: "",
     })
       .then((res) => {
-        console.log(res);
+        toast({
+          title: "Request send",
+        });
         setAllMemberList([]);
         setMemberEmail("");
         setOpen(false);
       })
-      .catch((e) => console.error(e));
+      .catch((e: TRPCError) => {
+        toast({
+          title: "faild to send request",
+          description: e.message,
+          variant: "destructive",
+        });
+      });
   }
 
   return (
     <AlertDialog open={open}>
       <AlertDialogTrigger asChild>
-        <Button onClick={() => setOpen(true)} className="w-fit" size={"sm"}>
+        <Button onClick={() => setOpen(true)} className="w-fit p-2" size={"sm"}>
           Add team member
         </Button>
       </AlertDialogTrigger>

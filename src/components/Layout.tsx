@@ -8,7 +8,7 @@ interface GlobalLayout {
 
 const Layout = ({ children }: GlobalLayout) => {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-full min-h-screen w-full">
       <MainSidebar />
       <div className="min-h-screen w-full overflow-y-clip bg-primary-foreground">
         {children}

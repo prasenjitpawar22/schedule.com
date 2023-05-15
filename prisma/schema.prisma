@@ -28,12 +28,12 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -72,17 +72,19 @@ model VerificationToken {
 }
 
 model Events {
-    id              String            @id @default(cuid())
-    title           String            @db.VarChar(240)
-    startDate       DateTime
-    endDate         DateTime
-    description     String            @db.VarChar(500)
-    user            User              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    userId          String
+    id                  String                @id @default(cuid())
+    title               String                @db.VarChar(240)
+    startDate           DateTime
+    endDate             DateTime
+    description         String                @db.VarChar(500)
+    user                User                  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId              String
     //TODO: add visibility - public or private default private
-    EventOrganizres EventOrganizres[]
-    EventLocations  EventLocations[]
-    EventRequest    EventRequest[]
+    EventOrganizres     EventOrganizres[]
+    EventLocations      EventLocations[]
+    EventRequest        EventRequest[]
+    Attende             Attende[]
+    EventAttendeRequest EventAttendeRequest[]
 
     @@index([userId])
 }
@@ -158,6 +160,30 @@ model EventRequest {
     event    Events     @relation(fields: [eventsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     eventsId String
     Requests Requests[]
+
+    @@index([eventsId])
+}
+
+// for invites 
+model Attende {
+    id       String @id @default(cuid())
+    email    String
+    name     String
+    event    Events @relation(fields: [eventsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    eventsId String
+
+    @@index([eventsId])
+}
+
+// event invites request
+model EventAttendeRequest {
+    id        String @id @default(cuid())
+    toEmail   String
+    toName    String
+    fromEmail String
+    fromName  String
+    event     Events @relation(fields: [eventsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    eventsId  String
 
     @@index([eventsId])
 }

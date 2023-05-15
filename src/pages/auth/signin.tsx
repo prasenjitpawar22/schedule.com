@@ -70,36 +70,34 @@ const SignIn = ({
         </Button>
       </form> */}
       {providers &&
-        Object.values(providers).map(
-          (provider) =>
-            provider.name !== "Credentials" &&
-            provider.name !== "Google" &&
-            provider.name !== "Twitter (Legacy)" && (
-              <div key={provider.name}>
-                <Button
-                  variant={"ghost"}
-                  className="flex items-center gap-2 "
-                  onClick={() => {
-                    signIn(provider.id)
-                      .then(() => {
-                        return;
-                      })
-                      .catch((e) => console.log(e));
-                  }}
-                >
-                  {provider.name === "Google" && <FcGoogle size={20} />}
-                  {provider.name === "GitHub" && <BsGithub size={18} />}
-                  {provider.name === "Discord" && (
-                    <BsDiscord color="#5865F2" size={20} />
-                  )}
-                  {provider.name === "Twitter (Legacy)" && (
-                    <BsTwitter color="#1DA1F2" size={20} />
-                  )}
-                  Sign in with {provider.name.split("(")[0]}
-                </Button>
-              </div>
-            )
-        )}
+        Object.values(providers).map((provider) => (
+          // provider.name !== "Credentials" &&
+          // provider.name !== "Google" &&
+          // provider.name !== "Twitter (Legacy)" &&
+          <div key={provider.name}>
+            <Button
+              variant={"ghost"}
+              className="flex items-center gap-2 "
+              onClick={() => {
+                signIn(provider.id)
+                  .then(() => {
+                    return;
+                  })
+                  .catch((e) => console.log(e));
+              }}
+            >
+              {provider.name === "Google" && <FcGoogle size={20} />}
+              {provider.name === "GitHub" && <BsGithub size={18} />}
+              {provider.name === "Discord" && (
+                <BsDiscord color="#5865F2" size={20} />
+              )}
+              {provider.name === "Twitter (Legacy)" && (
+                <BsTwitter color="#1DA1F2" size={20} />
+              )}
+              Sign in with {provider.name.split("(")[0]}
+            </Button>
+          </div>
+        ))}
       {router.query?.error === "OAuthAccountNotLinked" && (
         <Badge variant={"destructive"}>
           Please sign in with the same linked account!

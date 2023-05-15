@@ -54,7 +54,9 @@ const EmptyDataCard = ({ description, mainText }: Props) => {
           <div>
             <CardHeader>
               <CardTitle>{`Look's like you don't have ${mainText}`}</CardTitle>
-              <CardDescription>{`Create a ${description}`}</CardDescription>
+              {mainText !== "request" && (
+                <CardDescription>{`Create a ${description}`}</CardDescription>
+              )}
             </CardHeader>
             <CardContent className="">{/* <CreateEvent /> */}</CardContent>
           </div>

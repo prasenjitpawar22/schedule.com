@@ -19,6 +19,7 @@ import { IEventDto, IEvents, IOrganizerFormData } from "../@types";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Label } from "./ui/label";
+import { useToast } from "./ui/use-toast";
 
 interface Props {
   AllEventsState: IEvents[] | undefined;
@@ -35,6 +36,8 @@ export const CreateEvent = (props: Props) => {
     // update: userUpdateSession,
   } = useSession();
   const { refetch } = api.events.getAllEvents.useQuery();
+
+  const { toast } = useToast();
 
   const [organizersFormData, setOrganizersFormData] = useState<
     IOrganizerFormData[] | undefined
@@ -84,6 +87,7 @@ export const CreateEvent = (props: Props) => {
     })
       .then(() => {
         // less optmiszed fetching all events again
+        toast({ title: "Event created" });
         refetch()
           .then((res) => {
             if (res.data) {

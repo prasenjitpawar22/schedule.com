@@ -13,6 +13,7 @@ import { api } from "../utils/api";
 import EmptyDataCard from "./EmptyDataCard";
 import { IEvents } from "../@types";
 import { Badge } from "./ui/badge";
+import { useToast } from "./ui/use-toast";
 
 interface Props {
   AllEventsState: IEvents[];
@@ -21,19 +22,27 @@ interface Props {
 
 const AllEventsCard = (props: Props) => {
   const { AllEventsState, setAllEventsState } = props;
+  const { toast } = useToast();
 
   const [updateFormOpen, setUpdateFormOpen] = useState<boolean>(false);
-
   const { mutateAsync } = api.events.deletEvent.useMutation();
 
   function handleEventDelete(id: string) {
     mutateAsync({ id })
       //optimzed just no backend call
       .then(() => {
+        toast({
+          title: "Event deleted",
+        });
         setAllEventsState(AllEventsState?.filter((item) => item.id !== id));
       })
       .catch((e) => console.log(e));
   }
+
+  //handle send event invite email and add to eventInviteRequest table
+  const handleSendInvitesRequest = (event: IEvents) => {
+    console.log(event);
+  };
 
   if (!AllEventsState?.length)
     return <EmptyDataCard description="event" mainText="any event planned!" />;
@@ -72,7 +81,7 @@ const AllEventsCard = (props: Props) => {
                           </Badge>
                         ))}
                       </span>
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <UpdateEvent
                           AllEventsState={AllEventsState}
                           setAllEventsState={setAllEventsState}
@@ -80,7 +89,12 @@ const AllEventsCard = (props: Props) => {
                           setOpen={setUpdateFormOpen}
                           event={item}
                         />
-                        <Button size={"sm"}>Send invites</Button>
+                        <Button
+                          onClick={() => handleSendInvitesRequest(item)}
+                          size={"sm"}
+                        >
+                          Send invites
+                        </Button>
                         <Button
                           size={"sm"}
                           variant="outline"

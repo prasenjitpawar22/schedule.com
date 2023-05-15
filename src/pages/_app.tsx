@@ -10,6 +10,7 @@ import Layout from "../components/Layout";
 import { NextPage } from "next";
 import { ReactElement, ReactNode } from "react";
 import "react-datepicker/dist/react-datepicker.css";
+import { Toaster } from "../components/ui/toaster";
 
 export type NextPageWithLayout<
   P = { providers: any; csrfToken: any },
@@ -34,6 +35,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         {getLayout(
           <>
             <Component {...pageProps} />
+            <Toaster />
           </>
         )}
       </ThemeProvider>
