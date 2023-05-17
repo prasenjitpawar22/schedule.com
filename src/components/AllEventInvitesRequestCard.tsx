@@ -101,7 +101,7 @@ Props) => {
               <TableCell className="font-medium">
                 Join event{" "}
                 <span className="underline">{request.eventName}</span> request
-                from <Badge variant={"default"}> @{request.fromName}</Badge>
+                from <Badge variant={"default"}> @{request.fromEmail}</Badge>
               </TableCell>
               <TableCell className="flex gap-2 text-right">
                 <Button
