@@ -42,7 +42,7 @@ const SignIn = ({
       })
       .catch((e) => console.log(e));
   };
-  console.log(providers);
+  // console.log(providers);
 
   if (!providers) return <div>Loading</div>;
 

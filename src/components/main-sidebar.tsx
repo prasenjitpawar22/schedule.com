@@ -9,16 +9,36 @@ import {
   Bell,
   LogIn,
   Tag,
+  ChevronsRight,
+  ChevronsLeft,
 } from "lucide-react";
 
 import { Button } from "./ui/button";
 import AuthShowcase from "./auth-show-case";
 
 const MainSidebar = () => {
+  const [sideBarDisplayState, setSideBarDisplayState] = useState(true);
+
   return (
     <div
-      className={`flex h-full min-h-screen flex-col justify-between border-r p-4 shadow-sm shadow-primary-foreground `}
+      className={`flex h-full min-h-screen flex-col justify-between border-r 
+      bg-ternary p-4 shadow-sm shadow-primary-foreground xs:absolute lg:relative lg:translate-x-0 ${
+        sideBarDisplayState ? " xs:-translate-x-[88px]" : ""
+      } z-50 transition-all delay-200 `}
     >
+      {sideBarDisplayState ? (
+        <ChevronsRight
+          onClick={() => setSideBarDisplayState(false)}
+          className="absolute -right-10 w-12 cursor-pointer items-center rounded-full bg-ternary  lg:hidden"
+        />
+      ) : (
+        <ChevronsLeft
+          size={25}
+          onClick={() => setSideBarDisplayState(true)}
+          className="absolute -right-6 w-12 cursor-pointer items-center rounded-full bg-ternary  lg:hidden"
+        />
+      )}
+
       <div className="mt-4">
         <div className="mb-12 xs:hidden lg:block ">
           <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight lg:text-3xl">

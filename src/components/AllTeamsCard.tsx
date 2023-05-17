@@ -18,10 +18,19 @@ import AddTeamMember from "./AddTeamMember";
 interface Props {
   allTeamsState: ITeams[] | undefined;
   setAllTeamsState: React.Dispatch<React.SetStateAction<ITeams[] | undefined>>;
+  teamsWhereUserIsMemberState: ITeams[] | undefined;
+  setTeamsWhereUserIsMemberState: React.Dispatch<
+    React.SetStateAction<ITeams[] | undefined>
+  >;
 }
 
 const AllTeamsCard = (props: Props) => {
-  const { allTeamsState, setAllTeamsState } = props;
+  const {
+    allTeamsState,
+    setAllTeamsState,
+    setTeamsWhereUserIsMemberState,
+    teamsWhereUserIsMemberState,
+  } = props;
 
   const [addTeamMemeberModelState, setAddTeamMemeberModelState] =
     useState(false);
@@ -39,14 +48,17 @@ const AllTeamsCard = (props: Props) => {
       .catch((e) => console.log(e));
   }
 
-  console.log(allTeamsState);
+  console.log(teamsWhereUserIsMemberState);
 
   if (!allTeamsState?.length)
     return <EmptyDataCard mainText={"any Team"} description={"team"} />;
 
   return (
     <>
-      <Card>
+      <Card className="bg-ternary text-primary">
+        <CardHeader>
+          <CardTitle>Your team</CardTitle>
+        </CardHeader>
         <CardContent className="bg-ternary text-primary">
           <Accordion type="single" collapsible className="w-full">
             {allTeamsState &&
@@ -98,6 +110,65 @@ const AllTeamsCard = (props: Props) => {
           </Accordion>
         </CardContent>
       </Card>
+      {teamsWhereUserIsMemberState?.length && (
+        <Card className="bg-ternary text-primary">
+          <CardHeader>
+            <CardTitle>teams wher your member</CardTitle>
+          </CardHeader>
+          <CardContent className="bg-ternary text-primary">
+            <Accordion type="single" collapsible className="w-full">
+              {teamsWhereUserIsMemberState &&
+                teamsWhereUserIsMemberState.map((team, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="capitalize">
+                      {team.teamName}
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-col gap-5">
+                        {!team.TeamMembers.length ? (
+                          <span>No team members</span>
+                        ) : (
+                          <span className="flex gap-2">
+                            <span>Members: </span>
+                            {team.TeamMembers.map((member, index) => (
+                              <Badge
+                                variant={"secondary"}
+                                className="w-fit"
+                                key={index}
+                              >
+                                {" "}
+                                {member.memberEmail}{" "}
+                              </Badge>
+                            ))}
+                          </span>
+                        )}
+
+                        {/*
+                        TODO: add team leave btn
+                        <div className="flex flex-wrap gap-2">
+                          <AddTeamMember
+                            teamId={team.id}
+                            open={addTeamMemeberModelState}
+                            setOpen={setAddTeamMemeberModelState}
+                          />
+                          <Button
+                            size={"sm"}
+                            disabled={teamDeleteIsloading}
+                            variant="ghost"
+                            className="w-fit"
+                            onClick={() => handleTeamDelete(team.id)}
+                          >
+                            Delete team
+                          </Button>
+                        </div> */}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+            </Accordion>
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 };

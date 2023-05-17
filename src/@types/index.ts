@@ -34,10 +34,12 @@ export type ITeams = Team & {
 // Omit<Team, "userId">;
 
 export type ITeamMemberRequestAllData = {
-  team: {
-    id: string;
-    teamName: string;
-  } | null;
+  team:
+    | {
+        id: string;
+        teamName: string;
+      }
+    | undefined;
   id: string;
   fromMemeberEmail: string;
   fromMemberName: string;

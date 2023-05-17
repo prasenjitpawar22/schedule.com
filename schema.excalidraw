@@ -1,0 +1,480 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "type": "rectangle",
+      "version": 122,
+      "versionNonce": 814611127,
+      "isDeleted": false,
+      "id": "A1OUm_6lfcnXL-gtTj6n2",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 325.27794364240486,
+      "y": 1189.3351925046907,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "width": 132.7019530538828,
+      "height": 137.8058743251861,
+      "seed": 1004678327,
+      "groupIds": [],
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "ZXOK_nD5oS1uEZ9_Fl2Gc"
+        },
+        {
+          "id": "YcEFL0vYSNIn0ns6f_PCl",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1684239849583,
+      "link": null,
+      "locked": false
+    },
+    {
+      "type": "text",
+      "version": 154,
+      "versionNonce": 434248279,
+      "isDeleted": false,
+      "id": "ZXOK_nD5oS1uEZ9_Fl2Gc",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 340.12495288419,
+      "y": 1208.2381296672838,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "width": 103.0079345703125,
+      "height": 100,
+      "seed": 1028733497,
+      "groupIds": [],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1684236449625,
+      "link": null,
+      "locked": false,
+      "fontSize": 16,
+      "fontFamily": 1,
+      "text": "user\n-teams\n-events\n-notifications\n-requests",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "A1OUm_6lfcnXL-gtTj6n2",
+      "originalText": "user\n-teams\n-events\n-notifications\n-requests",
+      "lineHeight": 1.25,
+      "baseline": 94
+    },
+    {
+      "type": "text",
+      "version": 34,
+      "versionNonce": 2068473945,
+      "isDeleted": false,
+      "id": "eCUfupnU-4wrOsSOOiqR4",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 1648.1579081386274,
+      "y": 1488.125039660788,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "width": 1976.838134765625,
+      "height": 325,
+      "seed": 1297926263,
+      "groupIds": [],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1684237382045,
+      "link": null,
+      "locked": false,
+      "fontSize": 20,
+      "fontFamily": 1,
+      "text": "Generate a unique token or code for each invitee. This could be a random string of characters or a unique identifier for the invitee.\n\nStore the token or code in your database along with the email address of the invitee.\n\nCreate a link that includes the token or code as a parameter. For example:\n\nhttps://example.com/signup?token=abcdef123456\n\nWhen the invitee clicks on the link, extract the token or code from the URL parameter and use it to look up the corresponding email address in your database.\n\nIf the email address is found, display a signup form to the invitee with the email address pre-filled. Otherwise, display an error message indicating that the invite is invalid or has already been used.\n\nWhen the invitee submits the signup form, create an account for them in your system and mark the invite as used so that it cannot be used again.",
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Generate a unique token or code for each invitee. This could be a random string of characters or a unique identifier for the invitee.\n\nStore the token or code in your database along with the email address of the invitee.\n\nCreate a link that includes the token or code as a parameter. For example:\n\nhttps://example.com/signup?token=abcdef123456\n\nWhen the invitee clicks on the link, extract the token or code from the URL parameter and use it to look up the corresponding email address in your database.\n\nIf the email address is found, display a signup form to the invitee with the email address pre-filled. Otherwise, display an error message indicating that the invite is invalid or has already been used.\n\nWhen the invitee submits the signup form, create an account for them in your system and mark the invite as used so that it cannot be used again.",
+      "lineHeight": 1.25,
+      "baseline": 317
+    },
+    {
+      "id": "dsNOl5jNKp8RqfSkqf-mZ",
+      "type": "rectangle",
+      "x": 566.8017983310916,
+      "y": 1130.7784858759815,
+      "width": 254,
+      "height": 182,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1031452535,
+      "version": 60,
+      "versionNonce": 1796817239,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "PVoG3SCQEvuQNmGBkB8lC"
+        },
+        {
+          "id": "N9mhTAVkDAecoiyUM6ziY",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1684237295396,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "PVoG3SCQEvuQNmGBkB8lC",
+      "type": "text",
+      "x": 605.0258507602908,
+      "y": 1171.7784858759815,
+      "width": 177.55189514160156,
+      "height": 100,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "roundness": null,
+      "seed": 1570816473,
+      "version": 177,
+      "versionNonce": 1302741463,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1684237516615,
+      "link": null,
+      "locked": false,
+      "text": "events\n-EventLocations\n-EventOrganizres\n-EventAttendeRequest\n-Attende",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "baseline": 94,
+      "containerId": "dsNOl5jNKp8RqfSkqf-mZ",
+      "originalText": "events\n-EventLocations\n-EventOrganizres\n-EventAttendeRequest\n-Attende",
+      "lineHeight": 1.25
+    },
+    {
+      "id": "r4H0Od0voMh127kpsDupy",
+      "type": "rectangle",
+      "x": 990.1912778730166,
+      "y": 1158.1315695320363,
+      "width": 168.4404047002768,
+      "height": 158.09756155992386,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1694029273,
+      "version": 96,
+      "versionNonce": 1161504119,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "LDgKNH3vK7TGPIupwFemY"
+        },
+        {
+          "id": "N9mhTAVkDAecoiyUM6ziY",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1684237292538,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "LDgKNH3vK7TGPIupwFemY",
+      "type": "text",
+      "x": 1043.083500181651,
+      "y": 1187.1803503119982,
+      "width": 62.65596008300781,
+      "height": 100,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "roundness": null,
+      "seed": 1713734617,
+      "version": 101,
+      "versionNonce": 652638679,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1684237286065,
+      "link": null,
+      "locked": false,
+      "text": "Attende\n-id\n-name\n-email\n-event ",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "baseline": 94,
+      "containerId": "r4H0Od0voMh127kpsDupy",
+      "originalText": "Attende\n-id\n-name\n-email\n-event ",
+      "lineHeight": 1.25
+    },
+    {
+      "id": "N9mhTAVkDAecoiyUM6ziY",
+      "type": "arrow",
+      "x": 836.5263585420479,
+      "y": 1232.9324409640226,
+      "width": 134.19555416473997,
+      "height": 19.874923240229464,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "roundness": {
+        "type": 2
+      },
+      "seed": 2084041497,
+      "version": 184,
+      "versionNonce": 1131386873,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1684237549995,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          134.19555416473997,
+          -19.874923240229464
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "dsNOl5jNKp8RqfSkqf-mZ",
+        "focus": 0.29407418087779735,
+        "gap": 15.72456021095627
+      },
+      "endBinding": {
+        "elementId": "r4H0Od0voMh127kpsDupy",
+        "focus": 0.4313676369577619,
+        "gap": 19.469365166228727
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow"
+    },
+    {
+      "id": "-VHttAKLp4n8kZVH8LhDN",
+      "type": "rectangle",
+      "x": 552.4678239453684,
+      "y": 1356.6770252495471,
+      "width": 295.50950447589446,
+      "height": 153.6649531493456,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "roundness": {
+        "type": 3
+      },
+      "seed": 2100208951,
+      "version": 61,
+      "versionNonce": 1791927575,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "4I7Pb1ZntfkUEVKW0UaRe"
+        },
+        {
+          "id": "YcEFL0vYSNIn0ns6f_PCl",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1684239839110,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "4I7Pb1ZntfkUEVKW0UaRe",
+      "type": "text",
+      "x": 618.2386284294093,
+      "y": 1373.50950182422,
+      "width": 163.9678955078125,
+      "height": 120,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "roundness": null,
+      "seed": 15843097,
+      "version": 93,
+      "versionNonce": 891012055,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1684239804279,
+      "link": null,
+      "locked": false,
+      "text": "Teams\n-id\n-teamName\n-user\n-teamMembers\n-teamMemberRequest",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "baseline": 114,
+      "containerId": "-VHttAKLp4n8kZVH8LhDN",
+      "originalText": "Teams\n-id\n-teamName\n-user\n-teamMembers\n-teamMemberRequest",
+      "lineHeight": 1.25
+    },
+    {
+      "id": "YcEFL0vYSNIn0ns6f_PCl",
+      "type": "arrow",
+      "x": 466.7700629127864,
+      "y": 1276.1507026963284,
+      "width": 72.3998005273416,
+      "height": 84.2202023501386,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "roundness": {
+        "type": 2
+      },
+      "seed": 121633303,
+      "version": 135,
+      "versionNonce": 35180663,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1684239857888,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          72.3998005273416,
+          84.2202023501386
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "A1OUm_6lfcnXL-gtTj6n2",
+        "focus": -0.47572102536413713,
+        "gap": 8.790166216498733
+      },
+      "endBinding": {
+        "elementId": "-VHttAKLp4n8kZVH8LhDN",
+        "focus": -0.4592025324691035,
+        "gap": 13.297960505240383
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow"
+    },
+    {
+      "id": "o23_FQ8v7ZB_HzqTjuefe",
+      "type": "arrow",
+      "x": 454.9496949083661,
+      "y": 1254.726253983589,
+      "width": 113.03237683834362,
+      "height": 42.84889742547921,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "roundness": {
+        "type": 2
+      },
+      "seed": 1789598681,
+      "version": 37,
+      "versionNonce": 1623451545,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1684239843300,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          113.03237683834362,
+          -42.84889742547921
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": null,
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": "arrow"
+    }
+  ],
+  "appState": {
+    "gridSize": null,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}

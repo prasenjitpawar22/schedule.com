@@ -12,10 +12,12 @@ interface Props {
   setAllEventInviteRequest: React.Dispatch<
     React.SetStateAction<EventAttendeRequest[] | undefined>
   >;
+  setEmptyDataCard: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const AllEventInvitesRequestCard = ({
   allEventInviteRequest,
   setAllEventInviteRequest,
+  setEmptyDataCard,
 }: Props) => {
   const {
     data: allEventInviteRequestData,
@@ -27,17 +29,9 @@ const AllEventInvitesRequestCard = ({
   //   api.request.acceptTeamMemberRequest.useMutation();
 
   useEffect(() => {
-    console.log("asasdas");
-
-    console.log(allEventInviteRequestData);
-
     setAllEventInviteRequest(allEventInviteRequestData);
-    console.log(allEventInviteRequest);
+    if (allEventInviteRequestData?.length === 0) setEmptyDataCard(true);
   }, [allEventInviteRequestIsloading]);
-
-  useEffect(() => {
-    console.log(allEventInviteRequest, "is");
-  }, [allEventInviteRequest]);
 
   // const {
   //   mutateAsync: declineMutateAsync,
@@ -96,8 +90,8 @@ const AllEventInvitesRequestCard = ({
           {allEventInviteRequest?.map((request, index) => (
             <TableRow key={index}>
               <TableCell className="font-medium">
-                Add team member request from{" "}
-                <Badge variant={"default"}> @{request.fromName}</Badge> for team{" "}
+                Join event eventName request from{" "}
+                <Badge variant={"default"}> @{request.fromName}</Badge>
                 <span className="underline">{request.eventsId}</span>
               </TableCell>
               <TableCell className="flex gap-2 text-right">

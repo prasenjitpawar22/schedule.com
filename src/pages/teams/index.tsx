@@ -13,22 +13,32 @@ import AllDataCardShimmer from "@/src/components/AllDataCardShimmer";
 const Teams = () => {
   const {
     data: allTeamsData,
-    // error: allTeamsDataError,
     isLoading: allTeamsDataIsloading,
     refetch,
   } = api.teams.getAllTeams.useQuery();
 
-  const [teams, setTeams] = useState<ITeams[]>();
-  const [createTeamName, setCreateTeamName] = useState<string>("");
-
+  const {
+    data: teamsWhereUserIsMemberData,
+    isLoading: teamsWhereUserIsMemberIsLoading,
+  } = api.teams.getTeamsWhereUserIsMember.useQuery();
   const { mutateAsync, isLoading: createTeamIsloading } =
     api.teams.createTeam.useMutation();
+
+  const [teams, setTeams] = useState<ITeams[]>();
+  const [teamsWhereUserIsMemberState, setTeamsWhereUserIsMemberState] =
+    useState<ITeams[] | undefined>();
+
+  const [createTeamName, setCreateTeamName] = useState<string>("");
 
   const { toast } = useToast();
 
   useEffect(() => {
     setTeams(allTeamsData);
   }, [allTeamsDataIsloading]);
+
+  useEffect(() => {
+    setTeamsWhereUserIsMemberState(teamsWhereUserIsMemberData);
+  }, [teamsWhereUserIsMemberIsLoading]);
 
   // create team
   const handleTeamCreate = (e: FormEvent) => {
@@ -54,8 +64,6 @@ const Teams = () => {
     })().catch((e) => console.log(e));
   };
 
-  // if (allTeamsDataIsloading) return <div>loading</div>;
-
   return (
     <div className="m-12">
       <div className="mb-12 flex flex-wrap items-baseline justify-between  sm:flex-col sm:gap-2 md:flex-row ">
@@ -78,7 +86,12 @@ const Teams = () => {
       {allTeamsDataIsloading ? (
         <AllDataCardShimmer />
       ) : (
-        <AllTeamsCard allTeamsState={teams} setAllTeamsState={setTeams} />
+        <AllTeamsCard
+          teamsWhereUserIsMemberState={teamsWhereUserIsMemberState}
+          setTeamsWhereUserIsMemberState={setTeamsWhereUserIsMemberState}
+          allTeamsState={teams}
+          setAllTeamsState={setTeams}
+        />
       )}
     </div>
   );

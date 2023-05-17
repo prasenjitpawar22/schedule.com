@@ -111,7 +111,7 @@ const AddTeamMember = ({ open, setOpen, teamId }: Props) => {
           </AlertDialogCancel>
           <Button
             className={`flex items-center justify-center`}
-            onClick={() => handleRequestAddTeamMember}
+            onClick={() => handleRequestAddTeamMember()}
           >
             Send Request
             {isLoading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}

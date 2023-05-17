@@ -12,6 +12,12 @@ const Requests = () => {
     useState<ITeamMemberRequestAllData[]>();
   const [allEventInviteRequest, setAllEventInviteRequest] =
     useState<EventAttendeRequest[]>();
+
+  const [allMembersEmptyDataCardState, setAllMembersEmptyDataCardState] =
+    useState<boolean>(false);
+  const [allEventsEmptyDataCardState, setAllEventsEmptyDataCardState] =
+    useState<boolean>(false);
+
   return (
     <div className="m-12">
       <div className="mb-12 flex items-baseline justify-between gap-24">
@@ -20,18 +26,24 @@ const Requests = () => {
         </h1>
       </div>
 
-      {!allMemberRequest?.length && !allEventInviteRequest?.length ? (
+      {allMembersEmptyDataCardState && allEventsEmptyDataCardState ? (
         <EmptyDataCard description="" mainText="request" />
       ) : (
         <>
-          <AllMemberRequestCard
-            allMemberRequest={allMemberRequest}
-            setAllMemberRequest={setAllMemberRequest}
-          />
-          <AllEventInvitesRequestCard
-            allEventInviteRequest={allEventInviteRequest}
-            setAllEventInviteRequest={setAllEventInviteRequest}
-          />
+          {!allMembersEmptyDataCardState && (
+            <AllMemberRequestCard
+              setEmptyDataCard={setAllMembersEmptyDataCardState}
+              allMemberRequest={allMemberRequest}
+              setAllMemberRequest={setAllMemberRequest}
+            />
+          )}
+          {!allEventsEmptyDataCardState && (
+            <AllEventInvitesRequestCard
+              setEmptyDataCard={setAllEventsEmptyDataCardState}
+              allEventInviteRequest={allEventInviteRequest}
+              setAllEventInviteRequest={setAllEventInviteRequest}
+            />
+          )}
         </>
       )}
     </div>

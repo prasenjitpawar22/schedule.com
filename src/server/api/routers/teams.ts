@@ -23,6 +23,36 @@ export const teamsRouter = createTRPCRouter({
     });
   }),
 
+  getTeamsWhereUserIsMember: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma, session } = ctx;
+    if (!session.user.email) return;
+
+    // get list of team's id
+    const teamsWhereUserIsMember = await prisma.teamMembers.findMany({
+      where: { memberEmail: session.user.email },
+    });
+
+    // make list of id's
+    const listOfIdForTeamsWhereUserIsMember = teamsWhereUserIsMember.map(
+      (data) => {
+        const { teamId } = data;
+        return teamId;
+      }
+    );
+
+    const teams = await prisma.team.findMany({
+      where: { id: { in: listOfIdForTeamsWhereUserIsMember } },
+      select: {
+        TeamMembers: true,
+        id: true,
+        teamName: true,
+        userId: true,
+      },
+    });
+
+    return teams;
+  }),
+
   deleteTeam: protectedProcedure
     .input(z.object({ teamId: z.string() }))
     .mutation(async ({ ctx, input }) => {

@@ -12,11 +12,13 @@ interface Props {
   setAllMemberRequest: React.Dispatch<
     React.SetStateAction<ITeamMemberRequestAllData[] | undefined>
   >;
+  setEmptyDataCard: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AllMemberRequestCard = ({
   allMemberRequest,
   setAllMemberRequest,
+  setEmptyDataCard,
 }: Props) => {
   const {
     data: allMemberRequestData,
@@ -24,22 +26,24 @@ export const AllMemberRequestCard = ({
     refetch,
   } = api.request.getAllMemberRequest.useQuery();
 
-  const { mutateAsync, isLoading: acceptTeamRequsetIsloading } =
-    api.request.acceptTeamMemberRequest.useMutation();
-
-  useEffect(() => {
-    setAllMemberRequest(allMemberRequestData);
-  }, [allMemberRequestIsloading]);
-
   const {
     mutateAsync: declineMutateAsync,
     isLoading: declineAddTeamMemberRequestIsloading,
   } = api.request.declineAddTeamMemberRequest.useMutation();
 
+  const { mutateAsync, isLoading: acceptTeamRequsetIsloading } =
+    api.request.acceptTeamMemberRequest.useMutation();
+
+  useEffect(() => {
+    setAllMemberRequest(allMemberRequestData);
+    console.log(allMemberRequestData, "allMemberRequestData");
+
+    if (allMemberRequestData?.length === 0) setEmptyDataCard(true);
+  }, [allMemberRequestIsloading, refetch]);
+
   async function handleAccpetTeamMemberRequest(
     request: ITeamMemberRequestAllData
   ) {
-    // console.log(request);
     await mutateAsync({
       fromMemeberEmail: request.fromMemeberEmail,
       requestId: request.id,
