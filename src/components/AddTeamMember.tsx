@@ -32,29 +32,28 @@ const AddTeamMember = ({ open, setOpen, teamId }: Props) => {
   const { mutateAsync, isLoading } =
     api.request.sendMemberRequest.useMutation();
 
+  //TODO: check it later
   const handleRequestAddTeamMember = () => {
-    (async () =>
-      await mutateAsync({
-        teamId,
-        toMembersEmail: allMemberList,
-        toMemberName: "",
+    mutateAsync({
+      teamId,
+      toMembersEmail: allMemberList,
+      toMemberName: "",
+    })
+      .then(() => {
+        toast({
+          title: "Request send",
+        });
+        setAllMemberList([]);
+        setMemberEmail("");
+        setOpen(false);
       })
-        .then(() => {
-          toast({
-            title: "Request send",
-          });
-          setAllMemberList([]);
-          setMemberEmail("");
-          setOpen(false);
-        })
-        .catch((e: TRPCError) => {
-          toast({
-            title: "faild to send request",
-            description: e.message,
-            variant: "destructive",
-          });
-        })
-        .catch((e) => console.log(e)))();
+      .catch((e: TRPCError) => {
+        toast({
+          title: "faild to send request",
+          description: e.message,
+          variant: "destructive",
+        });
+      });
   };
 
   return (
