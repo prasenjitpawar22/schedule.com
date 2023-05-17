@@ -32,30 +32,30 @@ const AddTeamMember = ({ open, setOpen, teamId }: Props) => {
   const { mutateAsync, isLoading } =
     api.request.sendMemberRequest.useMutation();
 
-  async function handleRequestAddTeamMember() {
-    console.log(allMemberList);
-
-    await mutateAsync({
-      teamId,
-      toMembersEmail: allMemberList,
-      toMemberName: "",
-    })
-      .then((res) => {
-        toast({
-          title: "Request send",
-        });
-        setAllMemberList([]);
-        setMemberEmail("");
-        setOpen(false);
+  const handleRequestAddTeamMember = () => {
+    (async () =>
+      await mutateAsync({
+        teamId,
+        toMembersEmail: allMemberList,
+        toMemberName: "",
       })
-      .catch((e: TRPCError) => {
-        toast({
-          title: "faild to send request",
-          description: e.message,
-          variant: "destructive",
-        });
-      });
-  }
+        .then(() => {
+          toast({
+            title: "Request send",
+          });
+          setAllMemberList([]);
+          setMemberEmail("");
+          setOpen(false);
+        })
+        .catch((e: TRPCError) => {
+          toast({
+            title: "faild to send request",
+            description: e.message,
+            variant: "destructive",
+          });
+        })
+        .catch((e) => console.log(e)))();
+  };
 
   return (
     <AlertDialog open={open}>
@@ -111,6 +111,7 @@ const AddTeamMember = ({ open, setOpen, teamId }: Props) => {
           </AlertDialogCancel>
           <Button
             className={`flex items-center justify-center`}
+            //TODO: fix this shit
             onClick={() => handleRequestAddTeamMember()}
           >
             Send Request
