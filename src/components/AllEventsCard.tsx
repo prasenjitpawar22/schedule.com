@@ -14,6 +14,7 @@ import EmptyDataCard from "./EmptyDataCard";
 import { IEvents } from "../@types";
 import { Badge } from "./ui/badge";
 import { useToast } from "./ui/use-toast";
+import InviteAttendeeModal from "./InviteAttendeeModal";
 
 interface Props {
   AllEventsState: IEvents[];
@@ -23,9 +24,10 @@ interface Props {
 const AllEventsCard = (props: Props) => {
   const { AllEventsState, setAllEventsState } = props;
   const { toast } = useToast();
+  const { mutateAsync } = api.events.deletEvent.useMutation();
 
   const [updateFormOpen, setUpdateFormOpen] = useState<boolean>(false);
-  const { mutateAsync } = api.events.deletEvent.useMutation();
+  const [sendInviteModalState, setSendInviteModalState] = useState(false);
 
   function handleEventDelete(id: string) {
     mutateAsync({ id })
@@ -89,12 +91,11 @@ const AllEventsCard = (props: Props) => {
                           setOpen={setUpdateFormOpen}
                           event={item}
                         />
-                        <Button
-                          onClick={() => handleSendInvitesRequest(item)}
-                          size={"sm"}
-                        >
-                          Send invites
-                        </Button>
+                        <InviteAttendeeModal
+                          open={sendInviteModalState}
+                          eventId={item.id}
+                          setOpen={setSendInviteModalState}
+                        />
                         <Button
                           size={"sm"}
                           variant="outline"

@@ -1,6 +1,8 @@
 import { EventAttendeRequest } from "@prisma/client";
 import React, { useEffect, useState } from "react";
+import { IEventAttendeRequest } from "../@types";
 import { api } from "../utils/api";
+import AllDataCardShimmer from "./AllDataCardShimmer";
 import EmptyDataCard from "./EmptyDataCard";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -8,17 +10,19 @@ import { Card } from "./ui/card";
 import { Table, TableBody, TableCell, TableRow } from "./ui/table";
 
 interface Props {
-  allEventInviteRequest: EventAttendeRequest[] | undefined;
+  allEventInviteRequest: IEventAttendeRequest[] | undefined;
   setAllEventInviteRequest: React.Dispatch<
-    React.SetStateAction<EventAttendeRequest[] | undefined>
+    React.SetStateAction<IEventAttendeRequest[] | undefined>
   >;
   setEmptyDataCard: React.Dispatch<React.SetStateAction<boolean>>;
+  // setDataLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const AllEventInvitesRequestCard = ({
   allEventInviteRequest,
   setAllEventInviteRequest,
   setEmptyDataCard,
-}: Props) => {
+}: // setDataLoadingState,
+Props) => {
   const {
     data: allEventInviteRequestData,
     isLoading: allEventInviteRequestIsloading,
@@ -31,7 +35,10 @@ const AllEventInvitesRequestCard = ({
   useEffect(() => {
     setAllEventInviteRequest(allEventInviteRequestData);
     if (allEventInviteRequestData?.length === 0) setEmptyDataCard(true);
+    // setDataLoadingState(false);
   }, [allEventInviteRequestIsloading]);
+
+  console.log(allEventInviteRequestData);
 
   // const {
   //   mutateAsync: declineMutateAsync,
@@ -83,16 +90,18 @@ const AllEventInvitesRequestCard = ({
   //   return;
   // }
 
-  return (
+  return allEventInviteRequestIsloading ? (
+    <AllDataCardShimmer />
+  ) : (
     <Card className="bg-ternary p-4">
       <Table className="bg-ternary text-primary">
         <TableBody>
           {allEventInviteRequest?.map((request, index) => (
             <TableRow key={index}>
               <TableCell className="font-medium">
-                Join event eventName request from{" "}
-                <Badge variant={"default"}> @{request.fromName}</Badge>
-                <span className="underline">{request.eventsId}</span>
+                Join event{" "}
+                <span className="underline">{request.eventName}</span> request
+                from <Badge variant={"default"}> @{request.fromName}</Badge>
               </TableCell>
               <TableCell className="flex gap-2 text-right">
                 <Button

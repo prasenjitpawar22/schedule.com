@@ -13,13 +13,15 @@ interface Props {
     React.SetStateAction<ITeamMemberRequestAllData[] | undefined>
   >;
   setEmptyDataCard: React.Dispatch<React.SetStateAction<boolean>>;
+  // setDataLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AllMemberRequestCard = ({
   allMemberRequest,
   setAllMemberRequest,
   setEmptyDataCard,
-}: Props) => {
+}: // setDataLoadingState,
+Props) => {
   const {
     data: allMemberRequestData,
     isLoading: allMemberRequestIsloading,
@@ -39,6 +41,7 @@ export const AllMemberRequestCard = ({
     console.log(allMemberRequestData, "allMemberRequestData");
 
     if (allMemberRequestData?.length === 0) setEmptyDataCard(true);
+    // setDataLoadingState(false);
   }, [allMemberRequestIsloading, refetch]);
 
   async function handleAccpetTeamMemberRequest(

@@ -46,3 +46,13 @@ export type ITeamMemberRequestAllData = {
   toMemberEmail: string;
   toMemberName: string;
 };
+
+export type IEventAttendeRequest = {
+  eventName: string | undefined;
+  id: string;
+  toEmail: string;
+  toName: string;
+  fromEmail: string;
+  fromName: string;
+  eventsId: string;
+};

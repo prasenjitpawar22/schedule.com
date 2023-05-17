@@ -28,7 +28,7 @@ const SettingsThemeCard = () => {
 
   return (
     <Card
-      className={`flex w-fit flex-col items-center justify-center gap-4 bg-ternary p-4 text-foreground`}
+      className={`flex w-fit flex-col items-center justify-center gap-4 bg-ternary p-4 text-foreground transition-all duration-300`}
     >
       <CardHeader>
         <CardTitle className="">Select theme mode</CardTitle>

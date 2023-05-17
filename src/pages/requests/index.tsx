@@ -1,4 +1,5 @@
-import { ITeamMemberRequestAllData } from "@/src/@types";
+import { IEventAttendeRequest, ITeamMemberRequestAllData } from "@/src/@types";
+import AllDataCardShimmer from "@/src/components/AllDataCardShimmer";
 import AllEventInvitesRequestCard from "@/src/components/AllEventInvitesRequestCard";
 import { AllMemberRequestCard } from "@/src/components/AllMemberRequestCard";
 import EmptyDataCard from "@/src/components/EmptyDataCard";
@@ -11,7 +12,7 @@ const Requests = () => {
   const [allMemberRequest, setAllMemberRequest] =
     useState<ITeamMemberRequestAllData[]>();
   const [allEventInviteRequest, setAllEventInviteRequest] =
-    useState<EventAttendeRequest[]>();
+    useState<IEventAttendeRequest[]>();
 
   const [allMembersEmptyDataCardState, setAllMembersEmptyDataCardState] =
     useState<boolean>(false);
@@ -25,7 +26,6 @@ const Requests = () => {
           Requests
         </h1>
       </div>
-
       {allMembersEmptyDataCardState && allEventsEmptyDataCardState ? (
         <EmptyDataCard description="" mainText="request" />
       ) : (

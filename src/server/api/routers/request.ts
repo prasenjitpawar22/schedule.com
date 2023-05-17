@@ -168,7 +168,7 @@ export const requestRouter = createTRPCRouter({
     }),
 
   /* 
-  procedure for handling a event invite request  
+  procedure for handling a event invite request.
   - send email?
   - add data enventInvitRequest table
   */
@@ -177,27 +177,35 @@ export const requestRouter = createTRPCRouter({
       z.object({
         toEmail: z.array(z.string()),
         toName: z.string(),
-        fromEmail: z.string(),
-        fromName: z.string(),
-        event: z.object({
-          id: z.string(),
-        }),
+        // fromEmail: z.string(),
+        // fromName: z.string(),
+        eventsId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { event, fromEmail, fromName, toEmail, toName } = input;
+      const { eventsId, toEmail, toName } = input;
 
-      if (!ctx.session.user.email || !ctx.session.user.name)
-        throw new Error("user not found");
+      const email = ctx.session.user.email;
+      const name = ctx.session.user.name;
 
-      // check if any toEmail already in the table
-      // return
+      if (!email) throw new Error("user not found");
+      if (!name) throw new Error("user not found");
+
+      //TODO:
+      // check if already request send for any of the member
+      // if yes remove from from the list
 
       const data = toEmail.map((toEmail, index) => {
-        return { toEmail, fromEmail, fromName, eventsId: event.id, toName: "" };
+        return {
+          toEmail,
+          fromEmail: email,
+          fromName: name,
+          eventsId,
+          toName: "",
+        };
       });
 
-      await ctx.prisma.eventAttendeRequest.createMany({
+      return await ctx.prisma.eventAttendeRequest.createMany({
         data: data,
       });
     }),
@@ -205,10 +213,45 @@ export const requestRouter = createTRPCRouter({
   // get all request for event invites request
   getAllEventInviteRequests: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session.user.email) return;
-    console.log(ctx.session.user.email);
 
-    return await ctx.prisma.eventAttendeRequest.findMany({
+    // get all request of invites for the user
+    const allEventInvites = await ctx.prisma.eventAttendeRequest.findMany({
       where: { toEmail: ctx.session.user.email },
     });
+
+    // from id of event get event name
+    const events = await ctx.prisma.events.findMany({
+      where: {
+        id: {
+          in: allEventInvites.map((data) => data.eventsId),
+        },
+      },
+      select: {
+        title: true,
+        id: true,
+      },
+    });
+
+    console.log(events, "alla ");
+
+    const data = allEventInvites.map((list) => {
+      const { ...rest } = list;
+      return {
+        ...rest,
+        eventName: events.find((e) => e.id === rest.eventsId)?.title,
+      };
+    });
+
+    console.log(data, "sas");
+
+    // return allEventInvites
+    return data;
   }),
+
+  /* TODO: 
+    event accecpt request procedure 
+  */
+  /* 
+    event decline request procedure 
+  */
 });
