@@ -24,9 +24,9 @@ const MainSidebar = () => {
 
   return (
     <div
-      className={`flex h-full min-h-screen flex-col justify-between border-r 
-      bg-ternary p-4 shadow-sm shadow-primary-foreground xs:absolute lg:relative lg:translate-x-0 ${
-        sideBarDisplayState ? " xs:-translate-x-[88px]" : ""
+      className={`flex h-full min-h-screen flex-col  justify-between border-r bg-ternary p-4 
+      shadow-sm shadow-primary-foreground xs:absolute xs:w-[100px] lg:relative lg:w-52 lg:translate-x-0 ${
+        sideBarDisplayState ? " xs:-translate-x-[99px]" : ""
       } z-50 transition-all duration-300 `}
     >
       {sideBarDisplayState ? (
@@ -81,35 +81,37 @@ const MainSidebar = () => {
         </div>
       </div>
 
-      <div className="flex w-full flex-col items-center justify-start gap-2 border-t pt-4">
-        <div className="flex items-center gap-2">
-          <div className="relative h-10 w-10 ">
-            {!sessionData?.user.image ? (
-              <Skeleton className="h-10 w-10 rounded-full" />
-            ) : (
-              <Image
-                src={sessionData?.user.image}
-                alt="Picture of the author"
-                layout="fill" // required
-                objectFit="cover" // change to suit your needs
-                className="rounded-full border border-muted shadow" // just an example
-              />
-            )}
-          </div>
-          <div className="flex-col gap-1 xs:hidden lg:flex">
-            {sessionData?.user.name && sessionData?.user.email ? (
-              <div className="flex-col gap-1 xs:hidden lg:flex">
-                <Label>{sessionData?.user.name} </Label>
-                <Label className="text-[12px] text-muted-foreground">
-                  {sessionData?.user.email}
-                </Label>
-              </div>
-            ) : (
-              <div className="flex-col gap-1 xs:hidden lg:flex">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-40" />
-              </div>
-            )}
+      <div className="flex flex-col gap-1">
+        <div className="flex w-full flex-col flex-wrap items-center justify-start gap-2 overflow-hidden border-t pt-4">
+          <div className="flex items-center gap-2">
+            <div className="relative h-10 w-10 ">
+              {!sessionData?.user.image ? (
+                <Skeleton className="h-10 w-10 rounded-full" />
+              ) : (
+                <Image
+                  src={sessionData?.user.image}
+                  alt="Picture of the author"
+                  layout="fill" // required
+                  objectFit="cover" // change to suit your needs
+                  className="rounded-full border border-muted shadow" // just an example
+                />
+              )}
+            </div>
+            <div className="flex-col gap-1 xs:hidden lg:flex">
+              {sessionData?.user.name && sessionData?.user.email ? (
+                <div className="flex-col gap-1 xs:hidden lg:flex">
+                  <Label>{sessionData?.user.name} </Label>
+                  <Label className="text-[12px] text-muted-foreground">
+                    {sessionData?.user.email}
+                  </Label>
+                </div>
+              ) : (
+                <div className="flex-col gap-1 xs:hidden lg:flex">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-40" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <AuthShowcase />

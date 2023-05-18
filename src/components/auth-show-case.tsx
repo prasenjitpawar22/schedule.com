@@ -26,7 +26,7 @@ const AuthShowcase = () => {
           </>
         </Button>
       ) : (
-        <Skeleton className="h-10 w-28" />
+        <Skeleton className="h-10 w-full" />
       )}
     </div>
   );
