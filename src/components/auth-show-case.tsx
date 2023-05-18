@@ -2,6 +2,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "@/utils/api";
 import { Button } from "./ui/button";
 import { LogIn, LogOut } from "lucide-react";
+import { Skeleton } from "./ui/skeleton";
 
 const AuthShowcase = () => {
   const { data: sessionData } = useSession();
@@ -13,23 +14,20 @@ const AuthShowcase = () => {
 
   return (
     <div className="">
-      <Button
-        className="w-full items-center justify-center  bg-inherit font-semibold  capitalize text-foreground
-          hover:bg-primary hover:text-secondary"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? (
+      {sessionData ? (
+        <Button
+          className="w-full items-center justify-center  bg-inherit font-semibold  capitalize text-foreground
+       hover:bg-primary hover:text-secondary"
+          onClick={sessionData ? () => void signOut() : () => void signIn()}
+        >
           <>
             <LogOut className="mr-2 h-4 w-4" />
             <span className="xs:hidden lg:block">Sign out</span>
           </>
-        ) : (
-          <>
-            <LogIn className="mr-2 h-4 w-4" />
-            <span className="xs:hidden lg:block">Sign in</span>
-          </>
-        )}
-      </Button>
+        </Button>
+      ) : (
+        <Skeleton className="h-10 w-28" />
+      )}
     </div>
   );
 };

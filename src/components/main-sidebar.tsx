@@ -16,6 +16,7 @@ import AuthShowcase from "./auth-show-case";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { Label } from "./ui/label";
+import { Skeleton } from "./ui/skeleton";
 
 const MainSidebar = () => {
   const { data: sessionData } = useSession();
@@ -81,25 +82,36 @@ const MainSidebar = () => {
       </div>
 
       <div className="flex w-full flex-col items-center justify-start gap-2 border-t pt-4">
-        {sessionData && sessionData.user.image ? (
-          <div className="flex items-center gap-2">
-            <div className="relative h-10 w-10 ">
+        <div className="flex items-center gap-2">
+          <div className="relative h-10 w-10 ">
+            {!sessionData?.user.image ? (
+              <Skeleton className="h-10 w-10 rounded-full" />
+            ) : (
               <Image
-                src={sessionData.user.image}
+                src={sessionData?.user.image}
                 alt="Picture of the author"
                 layout="fill" // required
                 objectFit="cover" // change to suit your needs
                 className="rounded-full border border-muted shadow" // just an example
               />
-            </div>
-            <div className="flex-col gap-1 xs:hidden lg:flex">
-              <Label>{sessionData.user.name} </Label>
-              <Label className="text-[12px] text-muted-foreground">
-                {sessionData.user.email}{" "}
-              </Label>
-            </div>
+            )}
           </div>
-        ) : null}
+          <div className="flex-col gap-1 xs:hidden lg:flex">
+            {sessionData?.user.name && sessionData?.user.email ? (
+              <div className="flex-col gap-1 xs:hidden lg:flex">
+                <Label>{sessionData?.user.name} </Label>
+                <Label className="text-[12px] text-muted-foreground">
+                  {sessionData?.user.email}
+                </Label>
+              </div>
+            ) : (
+              <div className="flex-col gap-1 xs:hidden lg:flex">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+            )}
+          </div>
+        </div>
         <AuthShowcase />
       </div>
     </div>
