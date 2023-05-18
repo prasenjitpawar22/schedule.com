@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Accordion,
@@ -6,7 +6,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
-import { type Events } from "@prisma/client";
 import UpdateEvent from "./UpdateEvent";
 import { Button } from "./ui/button";
 import { api } from "../utils/api";
@@ -15,6 +14,8 @@ import { IEvents } from "../@types";
 import { Badge } from "./ui/badge";
 import { useToast } from "./ui/use-toast";
 import InviteAttendeeModal from "./InviteAttendeeModal";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 interface Props {
   AllEventsState: IEvents[] | undefined;
@@ -40,6 +41,8 @@ const AllEventsCard = (props: Props) => {
   const [updateFormOpen, setUpdateFormOpen] = useState<boolean>(false);
   const [sendInviteModalState, setSendInviteModalState] = useState(false);
 
+  dayjs.extend(relativeTime);
+
   function handleEventDelete(id: string) {
     mutateAsync({ id })
       //optimzed just no backend call
@@ -51,7 +54,6 @@ const AllEventsCard = (props: Props) => {
       })
       .catch((e) => console.log(e));
   }
-
   if (!AllEventsState?.length && !allEventsToAttend?.length)
     return <EmptyDataCard description="event" mainText="any event planned!" />;
 
@@ -60,7 +62,7 @@ const AllEventsCard = (props: Props) => {
       {AllEventsState?.length ? (
         <Card className="mb-8 bg-muted text-primary">
           <CardHeader>
-            <CardTitle>Your events</CardTitle>
+            <CardTitle>Your events </CardTitle>
           </CardHeader>
           <CardContent className="bg-ternary text-primary">
             <Accordion type="single" collapsible className="w-full">
@@ -68,26 +70,65 @@ const AllEventsCard = (props: Props) => {
                 AllEventsState.map((item, index) => (
                   <AccordionItem key={index} value={`item-${index}`}>
                     <AccordionTrigger className="capitalize">
-                      {item.title}
+                      <div className="flex items-baseline gap-2">
+                        <span>{item.title}</span>
+                        <Badge
+                          variant={"outline"}
+                          className="tex-muted-foreground"
+                        >
+                          {dayjs(item.startDate).fromNow()}
+                        </Badge>
+                      </div>
                     </AccordionTrigger>
+
                     <AccordionContent>
                       <div className="flex flex-col gap-2">
-                        <span>
-                          Yes. It adheres to the WAI-ARIA design pattern.{" "}
-                          {item.description}
-                        </span>
-                        {item.EventLocations.map((location, index) => (
-                          <span key={index} className="capitalize">
-                            {location.city} {location.state} {location.country}:
-                            {item.startDate.toString().split("GMT")[0]}
-                            {" - "}
-                            {item.endDate.toString().split("GMT")[0]}
+                        {item.description && (
+                          <span>
+                            Description:{" "}
+                            <Badge
+                              variant={"secondary"}
+                              className={"text-muted-foreground"}
+                            >
+                              {item.description}
+                            </Badge>{" "}
                           </span>
+                        )}
+                        {item.EventLocations.map((location, index) => (
+                          <div key={index} className="flex w-full flex-wrap">
+                            <div className="flex gap-1">
+                              <span>{"Locations & time:"}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                              <Badge
+                                variant={"secondary"}
+                                className={"text-muted-foreground"}
+                              >
+                                {location.city} {location.state}{" "}
+                                {location.country}
+                              </Badge>
+                              <Badge
+                                variant={"secondary"}
+                                className={"text-muted-foreground"}
+                              >
+                                from{" "}
+                                {dayjs(item.startDate).format(
+                                  "DD MMM YY h:mm A"
+                                )}{" "}
+                                to{" "}
+                                {dayjs(item.endDate).format("DD MMM YY h:mm A")}
+                              </Badge>
+                            </div>
+                          </div>
                         ))}
                         <span className="capitalize">
                           Organizers:{" "}
                           {item.EventOrganizres.map((org, index) => (
-                            <Badge key={index} variant={"secondary"}>
+                            <Badge
+                              key={index}
+                              variant={"secondary"}
+                              className={"text-muted-foreground"}
+                            >
                               {" "}
                               {org.organizerName}
                             </Badge>
@@ -97,7 +138,11 @@ const AllEventsCard = (props: Props) => {
                           Attendees:{" "}
                           {item.Attende
                             ? item.Attende?.map((attendee, index) => (
-                                <Badge key={index} variant={"secondary"}>
+                                <Badge
+                                  key={index}
+                                  variant={"secondary"}
+                                  className={"text-muted-foreground"}
+                                >
                                   {" "}
                                   {attendee.email}
                                 </Badge>
@@ -146,26 +191,73 @@ const AllEventsCard = (props: Props) => {
                 allEventsToAttend.map((item, index) => (
                   <AccordionItem key={index} value={`item-${index}`}>
                     <AccordionTrigger className="capitalize">
-                      {item.title}
+                      <div className="flex items-baseline gap-2">
+                        <span>{item.title}</span>
+                        <Badge
+                          variant={"outline"}
+                          className="tex-muted-foreground"
+                        >
+                          {dayjs(item.startDate).fromNow()}
+                        </Badge>
+                      </div>
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="flex flex-col gap-2">
-                        <span>
-                          Yes. It adheres to the WAI-ARIA design pattern.{" "}
-                          {item.description}
-                        </span>
+                        {item.description && (
+                          <span>
+                            Description:{" "}
+                            <Badge
+                              variant={"secondary"}
+                              className={"text-muted-foreground"}
+                            >
+                              {item.description}
+                            </Badge>{" "}
+                          </span>
+                        )}
                         {item.EventLocations.map((location, index) => (
+                          <div key={index} className="flex w-full flex-wrap">
+                            <div className="flex gap-1">
+                              <span className="">{"Locations & time:"}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                              <Badge
+                                variant={"secondary"}
+                                className={"text-muted-foreground"}
+                              >
+                                {location.city} {location.state}{" "}
+                                {location.country}
+                              </Badge>
+                              <Badge
+                                variant={"secondary"}
+                                className={"text-muted-foreground"}
+                              >
+                                from{" "}
+                                {dayjs(item.startDate).format(
+                                  "DD MMM YY h:mm A"
+                                )}{" "}
+                                to{" "}
+                                {dayjs(item.endDate).format("DD MMM YY h:mm A")}
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
+                        {/* {item.description && <span>{item.description}</span>} */}
+                        {/* {item.EventLocations.map((location, index) => (
                           <span key={index} className="capitalize">
                             {location.city} {location.state} {location.country}:
                             {item.startDate.toString().split("GMT")[0]}
                             {" - "}
                             {item.endDate.toString().split("GMT")[0]}
                           </span>
-                        ))}
+                        ))} */}
                         <span className="capitalize">
                           Organizers:{" "}
                           {item.EventOrganizres.map((org, index) => (
-                            <Badge key={index} variant={"secondary"}>
+                            <Badge
+                              key={index}
+                              variant={"secondary"}
+                              className={"text-muted-foreground"}
+                            >
                               {" "}
                               {org.organizerName}
                             </Badge>
@@ -175,7 +267,11 @@ const AllEventsCard = (props: Props) => {
                           Attendees:{" "}
                           {item.Attende
                             ? item.Attende?.map((attendee, index) => (
-                                <Badge key={index} variant={"secondary"}>
+                                <Badge
+                                  key={index}
+                                  className={"text-muted-foreground"}
+                                  variant={"secondary"}
+                                >
                                   {" "}
                                   {attendee.email}
                                 </Badge>
