@@ -5,6 +5,7 @@ import type {
   TeamMembers,
   Team,
   TeamMemberRequest,
+  Attende,
 } from "@prisma/client";
 
 // export type Event
@@ -24,6 +25,7 @@ export type IEventDto = Omit<
 export type IEvents = Events & {
   EventLocations: EventLocations[];
   EventOrganizres: EventOrganizres[];
+  Attende: Attende[];
 };
 
 export type ITeams = Team & {

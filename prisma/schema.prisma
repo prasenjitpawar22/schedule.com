@@ -164,7 +164,7 @@ model EventRequest {
     @@index([eventsId])
 }
 
-// for invites 
+// for event attendees 
 model Attende {
     id       String @id @default(cuid())
     email    String

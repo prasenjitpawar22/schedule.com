@@ -1,13 +1,13 @@
-import { EventAttendeRequest } from "@prisma/client";
-import React, { useEffect, useState } from "react";
+import { TRPCError } from "@trpc/server";
+import React, { useEffect } from "react";
 import { IEventAttendeRequest } from "../@types";
 import { api } from "../utils/api";
 import AllDataCardShimmer from "./AllDataCardShimmer";
-import EmptyDataCard from "./EmptyDataCard";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Table, TableBody, TableCell, TableRow } from "./ui/table";
+import { useToast } from "./ui/use-toast";
 
 interface Props {
   allEventInviteRequest: IEventAttendeRequest[] | undefined;
@@ -15,80 +15,69 @@ interface Props {
     React.SetStateAction<IEventAttendeRequest[] | undefined>
   >;
   setEmptyDataCard: React.Dispatch<React.SetStateAction<boolean>>;
-  // setDataLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const AllEventInvitesRequestCard = ({
   allEventInviteRequest,
   setAllEventInviteRequest,
   setEmptyDataCard,
-}: // setDataLoadingState,
-Props) => {
+}: Props) => {
   const {
     data: allEventInviteRequestData,
     isLoading: allEventInviteRequestIsloading,
     refetch: allEventInviteRequesRefetch,
   } = api.request.getAllEventInviteRequests.useQuery();
 
-  // const { mutateAsync, isLoading: acceptTeamRequsetIsloading } =
-  //   api.request.acceptTeamMemberRequest.useMutation();
+  const {
+    mutateAsync: acceptEventAttendeeMutateAsync,
+    isLoading: acceptEventAttendeeIsloading,
+  } = api.request.acceptEventAttendRequest.useMutation();
+
+  const {
+    mutateAsync: declineEventAttendeeMutateAsync,
+    isLoading: declineEventAttendeeIsloading,
+  } = api.request.declineEventAttendeRequest.useMutation();
+
+  const { toast } = useToast();
 
   useEffect(() => {
     setAllEventInviteRequest(allEventInviteRequestData);
     if (allEventInviteRequestData?.length === 0) setEmptyDataCard(true);
-    // setDataLoadingState(false);
   }, [allEventInviteRequestIsloading]);
 
-  console.log(allEventInviteRequestData);
+  const handleAccpetEventAttendeRequest = (request: IEventAttendeRequest) => {
+    acceptEventAttendeeMutateAsync({
+      eventId: request.eventsId,
+      fromEmail: request.fromEmail,
+      requestId: request.id,
+      toEmail: request.toEmail,
+    })
+      .then(() => {
+        // update state for event request list
+        setAllEventInviteRequest(
+          allEventInviteRequest?.filter((list) => list.id != request.id)
+        );
+        toast({ title: "request accepted" });
+      })
+      .catch((e: TRPCError) =>
+        toast({ title: "error accepting requst", description: e.message })
+      );
+  };
 
-  // const {
-  //   mutateAsync: declineMutateAsync,
-  //   isLoading: declineAddTeamMemberRequestIsloading,
-  // } = api.request.declineAddTeamMemberRequest.useMutation();
-
-  // async function handleAccpetTeamMemberRequest(
-  //   request: EventAttendeRequest
-  // ) {
-  //   // console.log(request);
-  //   await mutateAsync({
-  //     fromMemeberEmail: request.fromMemeberEmail,
-  //     requestId: request.id,
-  //     teamId: request.team?.id ?? "",
-  //     toMemberEmail: request.toMemberEmail,
-  //   })
-  //     .then((res) => {
-  //       // console.log(res);
-  //       //TODO: make more efficient
-  //       allEventInviteRequesRefetch()
-  //         .then((res) => setAllEventInviteRequest(res.data))
-  //         .catch((e) => console.log(e));
-  //     })
-  //     .catch((e) => console.log(e));
-  //   return;
-  // }
-  // async function handleDeclineRequestForTeamMember(
-  //   request: EventAttendeRequest
-  // ) {
-  //   await declineMutateAsync({
-  //     requestId: request.id,
-  //   })
-  //     .then(() => {
-  //       //TODO: don't like using refetch lesss efficient
-  //       allEventInviteRequesRefetch()
-  //         .then((res) => {
-  //           setAllEventInviteRequest(res.data);
-  //           return;
-  //         })
-  //         .catch((e) => {
-  //           console.log(e);
-  //           return;
-  //         });
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //       return;
-  //     });
-  //   return;
-  // }
+  const handleDeclineEventAttendeRequest = (requestId: string) => {
+    declineEventAttendeeMutateAsync({
+      requestId,
+    })
+      .then(() => {
+        // update state for event request list
+        setAllEventInviteRequest(
+          allEventInviteRequest?.filter((list) => list.id != requestId)
+        );
+        toast({ title: "request declined" });
+      })
+      .catch((e: TRPCError) =>
+        toast({ title: "error declining the requst", description: e.message })
+      );
+  };
 
   return allEventInviteRequestIsloading ? (
     <AllDataCardShimmer />
@@ -105,28 +94,20 @@ Props) => {
               </TableCell>
               <TableCell className="flex gap-2 text-right">
                 <Button
-                  // disabled={declineAddTeamMemberRequestIsloading}
-                  // onClick={() => {
-                  //   handleDeclineRequestForTeamMember(request)
-                  //     .then(() => {
-                  //       return;
-                  //     })
-                  //     .catch((e) => console.log(e));
-                  // }}
+                  disabled={declineEventAttendeeIsloading}
+                  onClick={() => {
+                    handleDeclineEventAttendeRequest(request.id);
+                  }}
                   variant={"outline"}
                 >
                   Decline
                 </Button>
                 {"    "}{" "}
                 <Button
-                // disabled={acceptTeamRequsetIsloading}
-                // onClick={() => {
-                //   handleAccpetTeamMemberRequest(request)
-                //     .then(() => {
-                //       return;
-                //     })
-                //     .catch((e) => console.log(e));
-                // }}
+                  disabled={acceptEventAttendeeIsloading}
+                  onClick={() => {
+                    handleAccpetEventAttendeRequest(request);
+                  }}
                 >
                   Accept
                 </Button>

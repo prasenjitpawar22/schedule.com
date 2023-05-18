@@ -24,7 +24,9 @@ interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   AllEventsState: IEvents[] | undefined;
-  setAllEventsState: React.Dispatch<React.SetStateAction<IEvents[]>>;
+  setAllEventsState: React.Dispatch<
+    React.SetStateAction<IEvents[] | undefined>
+  >;
 }
 
 const UpdateEvent = ({

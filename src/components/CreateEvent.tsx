@@ -23,7 +23,9 @@ import { useToast } from "./ui/use-toast";
 
 interface Props {
   AllEventsState: IEvents[] | undefined;
-  setAllEventsState: React.Dispatch<React.SetStateAction<IEvents[]>>;
+  setAllEventsState: React.Dispatch<
+    React.SetStateAction<IEvents[] | undefined>
+  >;
   open: boolean | undefined;
   setOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
 }

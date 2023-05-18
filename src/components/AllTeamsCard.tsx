@@ -55,9 +55,9 @@ const AllTeamsCard = (props: Props) => {
 
   return (
     <>
-      <Card className="bg-ternary text-primary">
+      <Card className="mb-8 bg-muted text-primary">
         <CardHeader>
-          <CardTitle>Your team</CardTitle>
+          <CardTitle>Your teams</CardTitle>
         </CardHeader>
         <CardContent className="bg-ternary text-primary">
           <Accordion type="single" collapsible className="w-full">
@@ -111,9 +111,9 @@ const AllTeamsCard = (props: Props) => {
         </CardContent>
       </Card>
       {teamsWhereUserIsMemberState?.length && (
-        <Card className="bg-ternary text-primary">
+        <Card className="bg-muted text-primary">
           <CardHeader>
-            <CardTitle>teams wher your member</CardTitle>
+            <CardTitle>Teams where you are a member</CardTitle>
           </CardHeader>
           <CardContent className="bg-ternary text-primary">
             <Accordion type="single" collapsible className="w-full">

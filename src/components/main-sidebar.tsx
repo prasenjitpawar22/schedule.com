@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 import {
@@ -6,8 +6,6 @@ import {
   Calendar,
   Settings,
   PersonStanding,
-  Bell,
-  LogIn,
   Tag,
   ChevronsRight,
   ChevronsLeft,
@@ -15,8 +13,12 @@ import {
 
 import { Button } from "./ui/button";
 import AuthShowcase from "./auth-show-case";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { Label } from "./ui/label";
 
 const MainSidebar = () => {
+  const { data: sessionData } = useSession();
   const [sideBarDisplayState, setSideBarDisplayState] = useState(true);
 
   return (
@@ -78,7 +80,26 @@ const MainSidebar = () => {
         </div>
       </div>
 
-      <div>
+      <div className="flex w-full flex-col items-center justify-start gap-2 border-t pt-4">
+        {sessionData && sessionData.user.image ? (
+          <div className="flex items-center gap-2">
+            <div className="relative h-10 w-10 ">
+              <Image
+                src={sessionData.user.image}
+                alt="Picture of the author"
+                layout="fill" // required
+                objectFit="cover" // change to suit your needs
+                className="rounded-full border border-muted shadow" // just an example
+              />
+            </div>
+            <div className="flex-col gap-1 xs:hidden lg:flex">
+              <Label>{sessionData.user.name} </Label>
+              <Label className="text-[12px] text-muted-foreground">
+                {sessionData.user.email}{" "}
+              </Label>
+            </div>
+          </div>
+        ) : null}
         <AuthShowcase />
       </div>
     </div>

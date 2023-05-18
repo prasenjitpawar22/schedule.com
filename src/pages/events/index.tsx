@@ -7,17 +7,22 @@ import AllDataCardShimmer from "@/src/components/AllDataCardShimmer";
 
 const Event = ({}) => {
   const { data: AllEvents, isLoading } = api.events.getAllEvents.useQuery();
-  // const {} =
+  const { data: allEventsToAttendData, isLoading: allEventsToAttendIsLoading } =
+    api.events.getAllEventsWhereUserIsMemebr.useQuery();
+
   const [open, setOpen] = useState<boolean | undefined>(false);
 
-  const [AllEventsState, setAllEventsState] = useState<IEvents[]>(AllEvents!);
+  const [AllEventsState, setAllEventsState] = useState<IEvents[]>();
+  const [allEventsToAttend, setAllEventsToAttend] = useState<IEvents[]>();
 
   useEffect(() => {
-    setAllEventsState(AllEvents!);
+    setAllEventsState(AllEvents);
   }, [isLoading]);
 
-  //TODO: add shimmer effect
-  // if (isLoading) return <div>loading</div>;
+  useEffect(() => {
+    setAllEventsToAttend(allEventsToAttendData);
+  }, [allEventsToAttendIsLoading]);
+
   return (
     <div className="m-12">
       <div className="mb-12 flex flex-wrap items-baseline justify-between">
@@ -38,6 +43,8 @@ const Event = ({}) => {
         <AllEventsCard
           AllEventsState={AllEventsState}
           setAllEventsState={setAllEventsState}
+          allEventsToAttend={allEventsToAttend}
+          setAllEventsToAttend={setAllEventsToAttend}
         />
       )}
     </div>

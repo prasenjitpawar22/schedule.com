@@ -1,4 +1,5 @@
 import { Prisma, TeamMemberRequest } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { string, z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -19,9 +20,6 @@ export const requestRouter = createTRPCRouter({
         throw new Error("user Not valid");
       }
 
-      // TODO:
-      /* const checkIfAlreadyRequestSend for memebers[]
-      check if already request is send or not */
       const checkIfAlreadyRequsetSend =
         await ctx.prisma.teamMemberRequest.findMany({
           where: {
@@ -50,6 +48,7 @@ export const requestRouter = createTRPCRouter({
         input.toMembersEmail = filterList;
       }
 
+      // TODO:
       // check if already team member from list of input.toMembers
       const checkIfAlreadyteamMember = await ctx.prisma.teamMembers.findMany({
         where: {
@@ -121,6 +120,10 @@ export const requestRouter = createTRPCRouter({
     return data;
   }),
 
+  /*
+  accept the request to join team and become 
+  a team member
+  */
   acceptTeamMemberRequest: protectedProcedure
     .input(
       z.object({
@@ -153,6 +156,7 @@ export const requestRouter = createTRPCRouter({
       return addToTeamMembers;
     }),
 
+  // decline the team join request
   declineAddTeamMemberRequest: protectedProcedure
     .input(
       z.object({
@@ -168,7 +172,7 @@ export const requestRouter = createTRPCRouter({
     }),
 
   /* 
-  procedure for handling a event invite request.
+  procedure for handling send a event invite request.
   - send email?
   - add data enventInvitRequest table
   */
@@ -192,6 +196,7 @@ export const requestRouter = createTRPCRouter({
       if (!name) throw new Error("user not found");
 
       //TODO:
+      //cannot send to myself --- throw error
       // check if already request send for any of the member
       // if yes remove from from the list
 
@@ -248,10 +253,77 @@ export const requestRouter = createTRPCRouter({
     return data;
   }),
 
-  /* TODO: 
-    event accecpt request procedure 
+  /*
+    request for event accecpt  procedure 
   */
-  /* 
-    event decline request procedure 
+  acceptEventAttendRequest: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        fromEmail: z.string(),
+        toEmail: z.string(),
+        requestId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { eventId, fromEmail, requestId, toEmail } = input;
+      const { prisma, session } = ctx;
+
+      // check if already a attendee in the event
+      const alreadyAAttendee = await prisma.attende.findFirst({
+        where: { email: toEmail, eventsId: eventId },
+      });
+      if (alreadyAAttendee)
+        throw new Error("you are already a attendee in the event");
+
+      // create a prisma transaction for
+      // add to the attendee and then delete from the request
+      try {
+        await prisma
+          .$transaction(async (tx) => {
+            const attende = await prisma.attende.create({
+              data: {
+                email: toEmail,
+                name: "",
+                eventsId: eventId,
+              },
+            });
+
+            //finally remove from the request list
+            await prisma.eventAttendeRequest.delete({
+              where: { id: requestId },
+            });
+            return attende;
+          })
+          .then((res) => {
+            return res;
+          })
+          .catch((e) => {
+            if (e instanceof PrismaClientKnownRequestError) {
+              console.log(e);
+            }
+            throw e;
+          });
+      } catch (error) {
+        if (typeof error === "string") {
+          throw new Error(`internal server error ${error} `);
+        }
+        throw error;
+      }
+    }),
+
+  /*
+    request for event decline procedure 
   */
+  declineEventAttendeRequest: protectedProcedure
+    .input(
+      z.object({
+        requestId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.requests.delete({
+        where: { id: input.requestId },
+      });
+    }),
 });

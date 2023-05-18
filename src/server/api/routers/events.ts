@@ -13,21 +13,61 @@ export const eventsRouter = createTRPCRouter({
       });
     }),
 
-  getAllEvents: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.events.findMany({
+  // get all user created event
+  getAllEvents: protectedProcedure.query(async ({ ctx }) => {
+    const allEvents = await ctx.prisma.events.findMany({
       where: { userId: ctx.session.user.id },
       select: {
         description: true,
         endDate: true,
         EventLocations: true,
         EventOrganizres: true,
+        Attende: true,
         id: true,
         startDate: true,
         title: true,
-        // user: true,
         userId: true,
       },
     });
+    console.log(ctx.session.user.id, allEvents, "asll");
+
+    return allEvents;
+  }),
+
+  //get all events where user is member
+  getAllEventsWhereUserIsMemebr: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma, session } = ctx;
+    if (!session.user.email) return;
+
+    // get list of team's id
+    const eventsWhereUserIsAttendee = await prisma.attende.findMany({
+      where: { email: session.user.email },
+    });
+
+    // make list of id's
+    const listOfIdForEventsWhereUserIsAttendee = eventsWhereUserIsAttendee.map(
+      (data) => {
+        const { eventsId } = data;
+        return eventsId;
+      }
+    );
+
+    const events = await prisma.events.findMany({
+      where: { id: { in: listOfIdForEventsWhereUserIsAttendee } },
+      select: {
+        description: true,
+        endDate: true,
+        EventLocations: true,
+        EventOrganizres: true,
+        Attende: true,
+        id: true,
+        startDate: true,
+        title: true,
+        userId: true,
+      },
+    });
+
+    return events;
   }),
 
   createEvent: protectedProcedure
