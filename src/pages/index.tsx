@@ -17,7 +17,7 @@ const Home: NextPageWithLayout = () => {
           {" "}
           {`Create an event and start sending invites`}{" "}
         </p>{" "}
-        <Button onClick={() => goToDashBoard}>Create Event</Button>
+        <Button onClick={() => goToDashBoard()}>Create Event</Button>
       </div>
     </>
   );
