@@ -1,3 +1,4 @@
+import { Link } from "lucide-react";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
 import { Button } from "../components/ui/button";
@@ -6,10 +7,6 @@ import type { NextPageWithLayout } from "./_app";
 const Home: NextPageWithLayout = () => {
   const router = useRouter();
 
-  const goToDashBoard = async () => {
-    await router.push("/events").catch((e) => console.log(e));
-  };
-
   return (
     <>
       <div className="flex min-h-screen flex-col items-center justify-center gap-1">
@@ -17,7 +14,9 @@ const Home: NextPageWithLayout = () => {
           {" "}
           {`Create an event and start sending invites`}{" "}
         </p>{" "}
-        <Button onClick={() => goToDashBoard()}>Create Event</Button>
+        <Link href="/events">
+          <Button> Event</Button>
+        </Link>
       </div>
     </>
   );
