@@ -58,4 +58,24 @@ export const teamsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.team.delete({ where: { id: input.teamId } });
     }),
+
+  userLeaveTeam: protectedProcedure
+    .input(
+      z.object({
+        teamId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session.user.email) throw new Error("invalid user request");
+
+      const getTeamMemberId = await ctx.prisma.teamMembers.findFirst({
+        where: { memberEmail: ctx.session.user.email, teamId: input.teamId },
+      });
+
+      if (!getTeamMemberId)
+        throw new Error("user is already not a team member");
+      return ctx.prisma.teamMembers.delete({
+        where: { id: getTeamMemberId.id },
+      });
+    }),
 });

@@ -6,21 +6,24 @@ import { Button } from "@/src/components/ui/button";
 
 import AllTeamsCard from "@/src/components/AllTeamsCard";
 import { ITeams } from "@/src/@types";
-import { Skeleton } from "@/src/components/ui/skeleton";
 import { useToast } from "@/src/components/ui/use-toast";
 import AllDataCardShimmer from "@/src/components/AllDataCardShimmer";
 
 const Teams = () => {
+  const { toast } = useToast();
+
   const {
     data: allTeamsData,
     isLoading: allTeamsDataIsloading,
-    refetch,
+    refetch: allTeamsDataRefetch,
   } = api.teams.getAllTeams.useQuery();
 
   const {
     data: teamsWhereUserIsMemberData,
     isLoading: teamsWhereUserIsMemberIsLoading,
+    refetch: teamsWhereUserIsMemberRefetch,
   } = api.teams.getTeamsWhereUserIsMember.useQuery();
+
   const { mutateAsync, isLoading: createTeamIsloading } =
     api.teams.createTeam.useMutation();
 
@@ -29,16 +32,35 @@ const Teams = () => {
     useState<ITeams[] | undefined>();
 
   const [createTeamName, setCreateTeamName] = useState<string>("");
-
-  const { toast } = useToast();
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     setTeams(allTeamsData);
   }, [allTeamsDataIsloading]);
 
   useEffect(() => {
+    console.log(allTeamsDataIsloading, "allTeams");
+  });
+
+  useEffect(() => {
     setTeamsWhereUserIsMemberState(teamsWhereUserIsMemberData);
   }, [teamsWhereUserIsMemberIsLoading]);
+
+  useEffect(() => {
+    const refreshData = async () => {
+      await teamsWhereUserIsMemberRefetch()
+        .then((e) => {
+          console.log(e.data);
+        })
+        .catch((e) => console.log(e));
+      await allTeamsDataRefetch()
+        .then((e) => {
+          console.log(e);
+        })
+        .catch((e) => console.log(e));
+    };
+    refreshData().catch((e) => console.log(e));
+  }, [refresh]);
 
   // create team
   const handleTeamCreate = (e: FormEvent) => {
@@ -53,8 +75,7 @@ const Teams = () => {
             title: "Team created",
           });
 
-          //TODO: refetch all teams make more efficient method
-          await refetch()
+          await allTeamsDataRefetch()
             .then((res) => {
               setTeams(res.data);
             })
@@ -87,6 +108,8 @@ const Teams = () => {
         <AllDataCardShimmer />
       ) : (
         <AllTeamsCard
+          refresh={refresh}
+          setRefresh={setRefresh}
           teamsWhereUserIsMemberState={teamsWhereUserIsMemberState}
           setTeamsWhereUserIsMemberState={setTeamsWhereUserIsMemberState}
           allTeamsState={teams}

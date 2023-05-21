@@ -1,20 +1,23 @@
-import { type NextPage } from "next";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { ReactElement } from "react";
-import { api } from "../utils/api";
+import { Button } from "../components/ui/button";
 import type { NextPageWithLayout } from "./_app";
 
 const Home: NextPageWithLayout = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const router = useRouter();
 
-  if (!hello) return null;
+  const goToDashBoard = async () => {
+    await router.push("/events").catch((e) => console.log(e));
+  };
 
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center">
-        {" "}
-        <p className="text-4xl"> {`Landing Page`} </p>{" "}
-        <Link href={"/events"}>Events</Link>
+      <div className="flex min-h-screen flex-col items-center justify-center gap-1">
+        <p className="text-4xl">
+          {" "}
+          {`Create an event and start sending invites`}{" "}
+        </p>{" "}
+        <Button onClick={() => goToDashBoard}>Create Event</Button>
       </div>
     </>
   );

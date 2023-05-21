@@ -33,7 +33,15 @@ const InviteAttendeeModal = (props: Props) => {
   const [allMemberList, setAllMemberList] = useState<string[]>([]);
 
   const handleSendInvites = () => {
-    console.log(allMemberList);
+    // console.log(allMemberList);
+    if (allMemberList.length === 0) {
+      toast({
+        title: "please add invite email's to send request",
+        variant: "destructive",
+      });
+      return;
+    }
+
     mutateAsync({
       eventsId: eventId,
       toEmail: allMemberList,
@@ -80,10 +88,11 @@ const InviteAttendeeModal = (props: Props) => {
             >
               <div className="flex flex-none items-center gap-4">
                 <Input
-                  id="title"
+                  id="email"
                   placeholder="member email"
                   value={memberEmail}
                   required
+                  type={"email"}
                   onChange={(e) => setMemberEmail(e.target.value)}
                   className=""
                 />

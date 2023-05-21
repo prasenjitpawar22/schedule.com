@@ -6,12 +6,19 @@ import { IEvents } from "@/src/@types";
 import AllDataCardShimmer from "@/src/components/AllDataCardShimmer";
 
 const Event = ({}) => {
-  const { data: AllEvents, isLoading } = api.events.getAllEvents.useQuery();
-  const { data: allEventsToAttendData, isLoading: allEventsToAttendIsLoading } =
-    api.events.getAllEventsWhereUserIsMemebr.useQuery();
+  const {
+    data: AllEvents,
+    isLoading,
+    refetch: getAllCreatedEventsDataRefetch,
+  } = api.events.getAllEvents.useQuery();
+  const {
+    data: allEventsToAttendData,
+    isLoading: allEventsToAttendIsLoading,
+    refetch: allEventsToAttendRefetch,
+  } = api.events.getAllEventsWhereUserIsMemebr.useQuery();
 
   const [open, setOpen] = useState<boolean | undefined>(false);
-
+  const [refreshData, setRefreshData] = useState(false);
   const [AllEventsState, setAllEventsState] = useState<IEvents[]>();
   const [allEventsToAttend, setAllEventsToAttend] = useState<IEvents[]>();
 
@@ -22,6 +29,22 @@ const Event = ({}) => {
   useEffect(() => {
     setAllEventsToAttend(allEventsToAttendData);
   }, [allEventsToAttendIsLoading]);
+
+  //refresh data
+  useEffect(() => {
+    (async () => {
+      await allEventsToAttendRefetch()
+        .then((res) => {
+          setAllEventsToAttend(res.data);
+        })
+        .catch((e) => console.log(e));
+      await getAllCreatedEventsDataRefetch()
+        .then((res) => {
+          setAllEventsState(res.data);
+        })
+        .catch((e) => console.log(e));
+    })().catch((e) => console.log(e));
+  }, [refreshData]);
 
   return (
     <div className="m-12">
@@ -37,7 +60,7 @@ const Event = ({}) => {
         />
       </div>
 
-      {isLoading ? (
+      {isLoading || allEventsToAttendIsLoading ? (
         <AllDataCardShimmer />
       ) : (
         <AllEventsCard
@@ -45,6 +68,8 @@ const Event = ({}) => {
           setAllEventsState={setAllEventsState}
           allEventsToAttend={allEventsToAttend}
           setAllEventsToAttend={setAllEventsToAttend}
+          setRefreshData={setRefreshData}
+          refreshData={refreshData}
         />
       )}
     </div>

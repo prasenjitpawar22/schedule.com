@@ -89,11 +89,12 @@ const MainSidebar = () => {
                 <Skeleton className="h-10 w-10 rounded-full" />
               ) : (
                 <Image
+                  sizes="auto"
+                  width={100}
+                  height={100}
                   src={sessionData?.user.image}
                   alt="Picture of the author"
-                  layout="fill" // required
-                  objectFit="cover" // change to suit your needs
-                  className="rounded-full border border-muted shadow" // just an example
+                  className="rounded-full border border-muted shadow"
                 />
               )}
             </div>

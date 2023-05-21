@@ -1,4 +1,4 @@
-import { Prisma, TeamMemberRequest } from "@prisma/client";
+import { TeamMemberRequest } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { string, z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
@@ -273,8 +273,15 @@ export const requestRouter = createTRPCRouter({
       const alreadyAAttendee = await prisma.attende.findFirst({
         where: { email: toEmail, eventsId: eventId },
       });
-      if (alreadyAAttendee)
-        throw new Error("you are already a attendee in the event");
+
+      if (alreadyAAttendee) {
+        await prisma.eventAttendeRequest.delete({
+          where: { id: requestId },
+        });
+        throw new Error(
+          "you are already a attendee in the event and removed from request list"
+        );
+      }
 
       // create a prisma transaction for
       // add to the attendee and then delete from the request
@@ -322,7 +329,7 @@ export const requestRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.requests.delete({
+      return await ctx.prisma.eventAttendeRequest.delete({
         where: { id: input.requestId },
       });
     }),

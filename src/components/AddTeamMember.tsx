@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 
 import {
   AlertDialog,
@@ -69,22 +69,24 @@ const AddTeamMember = ({ open, setOpen, teamId }: Props) => {
             <AlertDialogTitle>Add Team members</AlertDialogTitle>
           </AlertDialogHeader>
           <div className="flex h-full flex-col gap-4 py-4">
-            <div className="flex flex-none items-center gap-4">
+            <form
+              onSubmit={(e: FormEvent) => {
+                e.preventDefault();
+                setAllMemberList([...allMemberList, memberEmail]);
+              }}
+              className="flex flex-none items-center gap-4"
+            >
               <Input
-                id="title"
+                id="email"
+                type={"email"}
                 placeholder="member email"
                 value={memberEmail}
+                required
                 onChange={(e) => setMemberEmail(e.target.value)}
                 className=""
               />
-              <Button
-                onClick={() =>
-                  setAllMemberList([...allMemberList, memberEmail])
-                }
-              >
-                Add
-              </Button>
-            </div>
+              <Button type="submit">Add</Button>
+            </form>
             <div className="max-h-48 grow gap-2 overflow-scroll overflow-x-hidden rounded bg-secondary p-4">
               {allMemberList?.map((member, index) => (
                 <Badge className="relative m-1 h-fit" key={index}>

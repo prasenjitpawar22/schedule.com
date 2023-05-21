@@ -16,6 +16,7 @@ import { useToast } from "./ui/use-toast";
 import InviteAttendeeModal from "./InviteAttendeeModal";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { TRPCError } from "@trpc/server";
 
 interface Props {
   AllEventsState: IEvents[] | undefined;
@@ -26,6 +27,8 @@ interface Props {
   setAllEventsToAttend: React.Dispatch<
     React.SetStateAction<IEvents[] | undefined>
   >;
+  setRefreshData: React.Dispatch<React.SetStateAction<boolean>>;
+  refreshData: boolean;
 }
 
 const AllEventsCard = (props: Props) => {
@@ -34,9 +37,16 @@ const AllEventsCard = (props: Props) => {
     setAllEventsState,
     allEventsToAttend,
     setAllEventsToAttend,
+    refreshData,
+    setRefreshData,
   } = props;
   const { toast } = useToast();
-  const { mutateAsync } = api.events.deletEvent.useMutation();
+  const { mutateAsync: deletEventMutateAsync, isLoading: deletEventIsLoading } =
+    api.events.deletEvent.useMutation();
+  const {
+    mutateAsync: attendeeLeaveEventMutateAsync,
+    isLoading: AttendeeLeaveEventIsLoading,
+  } = api.events.AttendeeLeaveEvent.useMutation();
 
   const [updateFormOpen, setUpdateFormOpen] = useState<boolean>(false);
   const [sendInviteModalState, setSendInviteModalState] = useState(false);
@@ -44,16 +54,46 @@ const AllEventsCard = (props: Props) => {
   dayjs.extend(relativeTime);
 
   function handleEventDelete(id: string) {
-    mutateAsync({ id })
-      //optimzed just no backend call
+    deletEventMutateAsync({ id })
       .then(() => {
         toast({
           title: "Event deleted",
         });
+
         setAllEventsState(AllEventsState?.filter((item) => item.id !== id));
+        setRefreshData(!refreshData);
       })
       .catch((e) => console.log(e));
   }
+
+  const handleLeaveEvent = (id: string) => {
+    console.log(id);
+    attendeeLeaveEventMutateAsync({
+      eventId: id,
+    })
+      .then(() => {
+        setAllEventsToAttend(
+          allEventsToAttend?.filter((event) => event.id != id)
+        );
+        toast({ title: "You are no longer attendee" });
+        setRefreshData(!refreshData);
+      })
+      .catch((e) => {
+        if (e instanceof TRPCError)
+          toast({
+            variant: "destructive",
+            title: "unable to process requeset",
+            description: e.message,
+          });
+        else {
+          toast({
+            variant: "destructive",
+            title: "unable to process requeset",
+          });
+        }
+      });
+  };
+
   if (!AllEventsState?.length && !allEventsToAttend?.length)
     return <EmptyDataCard description="event" mainText="any event planned!" />;
 
@@ -164,6 +204,7 @@ const AllEventsCard = (props: Props) => {
                           />
                           <Button
                             size={"sm"}
+                            disabled={deletEventIsLoading}
                             variant="outline"
                             className="w-fit"
                             onClick={() => handleEventDelete(item.id)}
@@ -241,15 +282,6 @@ const AllEventsCard = (props: Props) => {
                             </div>
                           </div>
                         ))}
-                        {/* {item.description && <span>{item.description}</span>} */}
-                        {/* {item.EventLocations.map((location, index) => (
-                          <span key={index} className="capitalize">
-                            {location.city} {location.state} {location.country}:
-                            {item.startDate.toString().split("GMT")[0]}
-                            {" - "}
-                            {item.endDate.toString().split("GMT")[0]}
-                          </span>
-                        ))} */}
                         <span className="capitalize">
                           Organizers:{" "}
                           {item.EventOrganizres.map((org, index) => (
@@ -278,30 +310,18 @@ const AllEventsCard = (props: Props) => {
                               ))
                             : "No list of attendees found"}
                         </span>
-
-                        {/* TODO: handle operation like -leave event
-                         <div className="flex flex-wrap gap-2">
-                          <UpdateEvent
-                            AllEventsState={AllEventsState}
-                            setAllEventsState={setAllEventsState}
-                            open={updateFormOpen}
-                            setOpen={setUpdateFormOpen}
-                            event={item}
-                          />
-                          <InviteAttendeeModal
-                            open={sendInviteModalState}
-                            eventId={item.id}
-                            setOpen={setSendInviteModalState}
-                          />
+                        TODO: handle operation like -leave event
+                        <div className="flex flex-wrap gap-2">
                           <Button
                             size={"sm"}
                             variant="outline"
+                            disabled={AttendeeLeaveEventIsLoading}
                             className="w-fit"
-                            onClick={() => handleEventDelete(item.id)}
+                            onClick={() => handleLeaveEvent(item.id)}
                           >
-                            Delete
+                            Leave event
                           </Button>
-                        </div> */}
+                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>

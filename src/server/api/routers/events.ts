@@ -223,4 +223,26 @@ export const eventsRouter = createTRPCRouter({
 
       return event;
     }),
+
+  AttendeeLeaveEvent: protectedProcedure
+    .input(z.object({ eventId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        if (!ctx.session.user.email) throw new Error("invalid user");
+
+        const getAttendeeId = await ctx.prisma.attende.findFirst({
+          where: { email: ctx.session.user.email, eventsId: input.eventId },
+        });
+        if (!getAttendeeId) throw new Error("attendee not found in list");
+
+        return await ctx.prisma.attende.delete({
+          where: { id: getAttendeeId.id },
+        });
+      } catch (e) {
+        if (typeof e === "string") {
+          throw new Error(`internal server error ${e} `);
+        }
+        throw e;
+      }
+    }),
 });

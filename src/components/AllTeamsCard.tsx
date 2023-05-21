@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Accordion,
@@ -6,14 +6,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
-import { Team, type Events } from "@prisma/client";
-import UpdateEvent from "./UpdateEvent";
 import { Button } from "./ui/button";
 import { api } from "../utils/api";
 import EmptyDataCard from "./EmptyDataCard";
-import { IEvents, ITeams } from "../@types";
+import { ITeams } from "../@types";
 import { Badge } from "./ui/badge";
 import AddTeamMember from "./AddTeamMember";
+import { useToast } from "./ui/use-toast";
+import { TRPCError } from "@trpc/server";
 
 interface Props {
   allTeamsState: ITeams[] | undefined;
@@ -22,95 +22,116 @@ interface Props {
   setTeamsWhereUserIsMemberState: React.Dispatch<
     React.SetStateAction<ITeams[] | undefined>
   >;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  refresh: boolean;
 }
 
 const AllTeamsCard = (props: Props) => {
-  const {
-    allTeamsState,
-    setAllTeamsState,
-    setTeamsWhereUserIsMemberState,
-    teamsWhereUserIsMemberState,
-  } = props;
+  const { allTeamsState, teamsWhereUserIsMemberState, refresh, setRefresh } =
+    props;
 
+  const { toast } = useToast();
   const [addTeamMemeberModelState, setAddTeamMemeberModelState] =
     useState(false);
-  const [updateFormOpen, setUpdateFormOpen] = useState<boolean>(false);
-
   const { mutateAsync, isLoading: teamDeleteIsloading } =
     api.teams.deleteTeam.useMutation();
+
+  const {
+    mutateAsync: userLeaveTeamMutateAsync,
+    isLoading: userLeaveTeamIsLoading,
+  } = api.teams.userLeaveTeam.useMutation();
 
   function handleTeamDelete(id: string) {
     mutateAsync({ teamId: id })
       //optimzed just no backend call
       .then(() => {
-        setAllTeamsState(allTeamsState?.filter((item) => item.id !== id));
+        setRefresh(!refresh);
       })
       .catch((e) => console.log(e));
   }
 
-  console.log(teamsWhereUserIsMemberState);
+  const handleLeaveTeam = (teamId: string) => {
+    userLeaveTeamMutateAsync({
+      teamId,
+    })
+      .then(() => {
+        setRefresh(!refresh);
+        toast({
+          title: "success",
+        });
+      })
+      .catch((e: TRPCError) => {
+        toast({
+          title: "error",
+          variant: "destructive",
+          description: e.message,
+        });
+      });
+  };
 
-  if (!allTeamsState?.length)
+  if (!allTeamsState?.length && !teamsWhereUserIsMemberState?.length)
     return <EmptyDataCard mainText={"any Team"} description={"team"} />;
 
   return (
     <>
-      <Card className="mb-8 bg-muted text-primary">
-        <CardHeader>
-          <CardTitle>Your teams</CardTitle>
-        </CardHeader>
-        <CardContent className="bg-ternary text-primary">
-          <Accordion type="single" collapsible className="w-full">
-            {allTeamsState &&
-              allTeamsState.map((team, index) => (
-                <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="capitalize">
-                    {team.teamName}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="flex flex-col gap-5">
-                      {!team.TeamMembers.length ? (
-                        <span>No team members</span>
-                      ) : (
-                        <span className="flex gap-2">
-                          <span>Members: </span>
-                          {team.TeamMembers.map((member, index) => (
-                            <Badge
-                              variant={"secondary"}
-                              className="w-fit"
-                              key={index}
-                            >
-                              {" "}
-                              {member.memberEmail}{" "}
-                            </Badge>
-                          ))}
-                        </span>
-                      )}
+      {allTeamsState?.length !== 0 && (
+        <Card className="mb-8 bg-muted text-primary">
+          <CardHeader>
+            <CardTitle>Your teams</CardTitle>
+          </CardHeader>
+          <CardContent className="bg-ternary text-primary">
+            <Accordion type="single" collapsible className="w-full">
+              {allTeamsState &&
+                allTeamsState.map((team, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="capitalize">
+                      {team.teamName}
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-col gap-5">
+                        {!team.TeamMembers.length ? (
+                          <span>No team members</span>
+                        ) : (
+                          <span className="flex gap-2">
+                            <span>Members: </span>
+                            {team.TeamMembers.map((member, index) => (
+                              <Badge
+                                variant={"secondary"}
+                                className="w-fit"
+                                key={index}
+                              >
+                                {" "}
+                                {member.memberEmail}{" "}
+                              </Badge>
+                            ))}
+                          </span>
+                        )}
 
-                      <div className="flex flex-wrap gap-2">
-                        <AddTeamMember
-                          teamId={team.id}
-                          open={addTeamMemeberModelState}
-                          setOpen={setAddTeamMemeberModelState}
-                        />
-                        <Button
-                          size={"sm"}
-                          disabled={teamDeleteIsloading}
-                          variant="ghost"
-                          className="w-fit"
-                          onClick={() => handleTeamDelete(team.id)}
-                        >
-                          Delete team
-                        </Button>
+                        <div className="flex flex-wrap gap-2">
+                          <AddTeamMember
+                            teamId={team.id}
+                            open={addTeamMemeberModelState}
+                            setOpen={setAddTeamMemeberModelState}
+                          />
+                          <Button
+                            size={"sm"}
+                            disabled={teamDeleteIsloading}
+                            variant="ghost"
+                            className="w-fit"
+                            onClick={() => handleTeamDelete(team.id)}
+                          >
+                            Delete team
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-          </Accordion>
-        </CardContent>
-      </Card>
-      {teamsWhereUserIsMemberState?.length && (
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+            </Accordion>
+          </CardContent>
+        </Card>
+      )}
+      {teamsWhereUserIsMemberState?.length !== 0 && (
         <Card className="bg-muted text-primary">
           <CardHeader>
             <CardTitle>Teams where you are a member</CardTitle>
@@ -142,25 +163,17 @@ const AllTeamsCard = (props: Props) => {
                             ))}
                           </span>
                         )}
-
-                        {/*
-                        TODO: add team leave btn
                         <div className="flex flex-wrap gap-2">
-                          <AddTeamMember
-                            teamId={team.id}
-                            open={addTeamMemeberModelState}
-                            setOpen={setAddTeamMemeberModelState}
-                          />
                           <Button
                             size={"sm"}
-                            disabled={teamDeleteIsloading}
-                            variant="ghost"
+                            disabled={userLeaveTeamIsLoading}
+                            variant="outline"
                             className="w-fit"
-                            onClick={() => handleTeamDelete(team.id)}
+                            onClick={() => handleLeaveTeam(team.id)}
                           >
-                            Delete team
+                            Leave team
                           </Button>
-                        </div> */}
+                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
