@@ -43,10 +43,19 @@ const MainSidebar = () => {
       )}
 
       <div className="mt-4">
-        <div className="mb-12 xs:hidden lg:block ">
-          <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight lg:text-3xl">
-            Schedule.com{" "}
-          </h1>
+        <div className="mb-4">
+          <Link href={"/"} className="flex items-center gap-2 overflow-hidden">
+            <Image
+              src={"/favicon.ico"}
+              width={50}
+              height={50}
+              alt={"schedule"}
+              className="rounded"
+            />{" "}
+            <h1 className="scroll-m-20 text-xl font-semibold tracking-tight xs:hidden lg:block lg:text-2xl">
+              Schedulr{" "}
+            </h1>
+          </Link>
         </div>
 
         <div className="flex flex-col border-t pt-3 ">
