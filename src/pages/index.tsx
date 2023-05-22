@@ -18,7 +18,11 @@ const Home: NextPageWithLayout = () => {
               {`Create an event and start sending invites`}{" "}
             </p>{" "}
             <Link href={"/events"}>
-              <Button className={`${styles.glowonhover}`}>Create Event</Button>
+              <Button
+                className={`${styles.glowonhover ? styles.glowonhover : ""}`}
+              >
+                Create Event
+              </Button>
             </Link>
           </div>
         </div>
