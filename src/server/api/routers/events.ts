@@ -29,8 +29,6 @@ export const eventsRouter = createTRPCRouter({
         userId: true,
       },
     });
-    console.log(ctx.session.user.id, allEvents, "asll");
-
     return allEvents;
   }),
 
@@ -86,7 +84,6 @@ export const eventsRouter = createTRPCRouter({
     )
     .mutation(async (opts) => {
       const { input, ctx } = opts;
-      console.log(input);
 
       const {
         city,

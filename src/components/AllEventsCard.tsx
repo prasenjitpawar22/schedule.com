@@ -310,7 +310,6 @@ const AllEventsCard = (props: Props) => {
                               ))
                             : "No list of attendees found"}
                         </span>
-                        TODO: handle operation like -leave event
                         <div className="flex flex-wrap gap-2">
                           <Button
                             size={"sm"}

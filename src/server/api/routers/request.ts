@@ -115,8 +115,6 @@ export const requestRouter = createTRPCRouter({
       };
     });
 
-    console.log(data, "final data");
-
     return data;
   }),
 
@@ -210,6 +208,8 @@ export const requestRouter = createTRPCRouter({
         };
       });
 
+      //TODO:send invite email to user sendGrid
+
       return await ctx.prisma.eventAttendeRequest.createMany({
         data: data,
       });
@@ -237,8 +237,6 @@ export const requestRouter = createTRPCRouter({
       },
     });
 
-    console.log(events, "alla ");
-
     const data = allEventInvites.map((list) => {
       const { ...rest } = list;
       return {
@@ -246,8 +244,6 @@ export const requestRouter = createTRPCRouter({
         eventName: events.find((e) => e.id === rest.eventsId)?.title,
       };
     });
-
-    console.log(data, "sas");
 
     // return allEventInvites
     return data;
